@@ -10,7 +10,7 @@ using MarkdownSharp;
 
 namespace MarkdownMemo
 {
-  public class MarkdownText : INotifyPropertyChanged
+  public class MarkdownText
   {
     #region Fields
     /// <summary>プロパティのバッキングストア</summary>
@@ -28,7 +28,7 @@ namespace MarkdownMemo
       {
         this._text = value;
         this.IsTextChanged = true;
-        OnPropertyChanged("Text");
+        OnTextChanged();
       }
     }
     
@@ -63,19 +63,12 @@ namespace MarkdownMemo
     /// <summary>
     /// プロパティ変更通知イベント
     /// </summary>
-    public event PropertyChangedEventHandler PropertyChanged;
-    #endregion
-
-    #region Protected Methods
-    /// <summary>
-    /// プロパティ変更通知イベントを発生させます
-    /// </summary>
-    /// <param name="name">プロパティ名</param>
-    protected void OnPropertyChanged(string name)
+    public event Action TextChanged;
+    protected void OnTextChanged()
     {
-      PropertyChangedEventHandler handler = PropertyChanged;
+      var handler = TextChanged;
       if (handler != null)
-        handler(this, new PropertyChangedEventArgs(name));
+        handler();
     }
     #endregion
 
@@ -205,7 +198,7 @@ namespace MarkdownMemo
     /// <returns>XHTMLドキュメント</returns>
     public XhtmlDocument ToXhtml(string title,string cssName)
     {
-      var mdString = new Markdown().Transform(this.Text).Replace("\n",Environment.NewLine);
+      var mdString = new Markdown().Transform(this.Text);
       return new XhtmlDocument(title,cssName,mdString);
     }
 

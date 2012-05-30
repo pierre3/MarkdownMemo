@@ -2,22 +2,9 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:c="clr-namespace:MarkdownMemo"
-        Title="Markdown Memo" 
+        Title="{Binding Path=Title}" 
         Height="512" 
         Width="768">
-
-    <Window.CommandBindings>
-        <CommandBinding Command="New" 
-                        Executed="FileNew_Execute"/>
-        <CommandBinding Command="Open"
-                        Executed="FileOpen_Executed"/>
-        <CommandBinding Command="Save"
-                        Executed="FileSave_Execute"/>
-        <CommandBinding Command="SaveAs"
-                        Executed="FileSaveAs_Execute"/>
-        <CommandBinding Command="{x:Static c:MainWindow.WindowCloseCommand}"
-                        Executed="WindowClose_Execute"/>
-    </Window.CommandBindings>
 
     <Grid>
         <Grid.RowDefinitions>
@@ -32,14 +19,14 @@
 
         <Menu Grid.Row="0" Grid.ColumnSpan="3" >
             <MenuItem Header="ファイル(_F)">
-                <MenuItem Header="新規作成(_N)"  Command="New"/>
-                <MenuItem Header="開く(_O)" Command="Open"/>
+                <MenuItem Header="新規作成(_N)"  Command="{Binding Path=NewCommand}"/>
+                <MenuItem Header="開く(_O)" Command="{Binding Path=OpenCommand}"/>
                 <Separator/>
-                <MenuItem Header="上書き保存(_S)" Command="Save"/>
-                <MenuItem Header="名前を付けて保存(_A)" Command="SaveAs"/>
+                <MenuItem Header="上書き保存(_S)" Command="{Binding Path=Save}"/>
+                <MenuItem Header="名前を付けて保存(_A)" Command="{Binding Path=SaveAs}"/>
                 <Separator/>
                 <MenuItem Header="終了(_X)" 
-                          Command="{x:Static c:MainWindow.WindowCloseCommand}"
+                          Command="{Binding Path=ExitCommand}"
                           InputGestureText="Alt+F4" />
             </MenuItem>
         </Menu>
@@ -55,14 +42,14 @@
                  Grid.Column="2" 
                  Grid.Row="1"
                  AcceptsReturn="True" 
+                 AcceptsTab="True"
                  FontFamily="Consolas" 
                  FontSize="14" 
                  VerticalScrollBarVisibility="Auto"
                  HorizontalScrollBarVisibility="Auto"
                  VerticalAlignment="Stretch"
                  HorizontalAlignment="Stretch" 
-                 Text="{Binding Source={x:Static c:MainWindow.MarkdownText},
-                    Path=Text, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                 Text="{Binding Path=Text, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
         <WebBrowser Name="prevewBrowser"
                     Focusable="False"
