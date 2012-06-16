@@ -3,8 +3,9 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:c="clr-namespace:MarkdownMemo"
         Title="{Binding Path=Title}" 
-        Height="512" 
-        Width="768">
+        Height="768" 
+        Width="900"
+        Closed="window_Closed">
 
     <Grid>
         <Grid.RowDefinitions>
@@ -14,16 +15,18 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition />
             <ColumnDefinition Width="Auto"/>
-            <ColumnDefinition Width="280"/>
+            <ColumnDefinition Width="400"/>
         </Grid.ColumnDefinitions>
 
         <Menu Grid.Row="0" Grid.ColumnSpan="3" >
-            <MenuItem Header="ファイル(_F)">
+            <MenuItem Header="ファイル(_F)" Click="MenuItem_Click">
                 <MenuItem Header="新規作成(_N)"  Command="{Binding Path=NewCommand}"/>
-                <MenuItem Header="開く(_O)" Command="{Binding Path=OpenCommand}"/>
+                <MenuItem Header="開く(_O)..." Command="{Binding Path=OpenCommand}"/>
                 <Separator/>
-                <MenuItem Header="上書き保存(_S)" Command="{Binding Path=Save}"/>
-                <MenuItem Header="名前を付けて保存(_A)" Command="{Binding Path=SaveAs}"/>
+                <MenuItem Header="上書き保存(_S)" Command="{Binding Path=SaveCommand}"/>
+                <MenuItem Header="名前を付けて保存(_A)..." Command="{Binding Path=SaveAsCommand}"/>
+                <Separator/>
+                <MenuItem Header="HTML形式で保存(_W)..." Command="{Binding Path=SaveHtmlCommand}"/>
                 <Separator/>
                 <MenuItem Header="終了(_X)" 
                           Command="{Binding Path=ExitCommand}"
@@ -38,8 +41,8 @@
                       HorizontalAlignment="Center"
                       Width="5"/>
 
-        <TextBox Name="textBox1"
-                 Grid.Column="2" 
+        <TextBox x:Name="textBox1"
+                 Grid.Column="0" 
                  Grid.Row="1"
                  AcceptsReturn="True" 
                  AcceptsTab="True"
@@ -47,15 +50,68 @@
                  FontSize="14" 
                  VerticalScrollBarVisibility="Auto"
                  HorizontalScrollBarVisibility="Auto"
-                 VerticalAlignment="Stretch"
-                 HorizontalAlignment="Stretch" 
-                 Text="{Binding Path=Text, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                 Text="{Binding Path=Text, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                 AllowDrop="True"
+                 PreviewDragOver="textBox1_previewDragOver"
+                 PreviewDrop="textBox1_previewDrop"/>
 
-        <WebBrowser Name="prevewBrowser"
-                    Focusable="False"
-                    Grid.Column="0"
+        <TabControl Grid.Column="2"
                     Grid.Row="1"
-                    Margin="5,5,5,5"/>
+                    VerticalAlignment="Stretch"
+                    HorizontalAlignment="Stretch" >
+
+            <TabItem Header="Preview">
+                <WebBrowser Name="prevewBrowser"
+                            Focusable="False"
+                            Margin="5,5,5,5"/>
+            </TabItem>
+
+            <TabItem Header="Reference">
+                <Canvas>
+                    <Label Canvas.Top="8"
+                           Canvas.Left="10"
+                           FontWeight="Bold">添付ファイル</Label>
+                    <ListBox x:Name="LinkListBox" 
+                             Canvas.Top="32"
+                             Canvas.Left="10"
+                             Width="256"
+                             Height="256"
+                             ItemsSource="{Binding Path=LinkItems}"
+                             IsSynchronizedWithCurrentItem="True"
+                             SelectedItem="{Binding Path=SelectedLinkItem}">
+                    </ListBox>
+                    <Button Canvas.Top="32"
+                            Canvas.Left="272" 
+                            Width="102"
+                            Command="{Binding Path=AddLinkCommand}">追加</Button>
+                    <Button Canvas.Top="58"
+                            Canvas.Left="272" 
+                            Width="102"
+                            Command="{Binding Path=DeleteLinkCommand}">削除</Button>
+                    <Button Canvas.Top="98"
+                            Canvas.Left="272" 
+                            Width="102"
+                            Command="{Binding Path=InsertLinkCommand}">テキストに貼り付け
+                    </Button>
+                    <Label Canvas.Top="299"
+                           Canvas.Left="10">場所:</Label>
+                    <TextBox Canvas.Top="300"
+                             Canvas.Left="53"
+                             Width="295"
+                             Text="{Binding Path=LinkPath, UpdateSourceTrigger=PropertyChanged}"/>
+                    <Button Canvas.Top="299"
+                            Canvas.Left="354" 
+                            Width="20"
+                            Command="{Binding Path=OpenLinkCommand}">...</Button>
+                    <Label Canvas.Top="326"
+                           Canvas.Left="10">名前:</Label>
+                    <TextBox Canvas.Top="328"
+                             Canvas.Left="53"
+                             Width="295"
+                             Text="{Binding Path=LinkName, UpdateSourceTrigger=PropertyChanged}"/>
+                </Canvas>
+            </TabItem>
+        </TabControl>
     </Grid>
 
 </Window>

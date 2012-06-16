@@ -1,13 +1,15 @@
 ﻿using System.Xml.Linq;
 
-namespace MarkdownMemo
+namespace MarkdownMemo.Model
 {
   /// <summary>
   /// XHTMLドキュメントを表します
   /// </summary>
   public class XhtmlDocument : XDocument
   {
-
+    /// <summary>XMLネームスペース</summary>
+    public static readonly XNamespace Xmlns = "http://www.w3.org/1999/xhtml";
+    
     /// <summary>
     /// コンストラクタ
     /// </summary>
@@ -27,34 +29,32 @@ namespace MarkdownMemo
       //    <body>$(body)</body>
       //  </head>
       //</html>
-      XNamespace xmlns = "http://www.w3.org/1999/xhtml";
       XElement bodyContents;
       try
       {
         bodyContents = XElement.Parse(
-          string.Format(@"<body xmlns=""{0}"">{1}</body>", xmlns, body));
+          string.Format(@"<body xmlns=""{0}"">{1}</body>", Xmlns, body));
       }
       catch
       {
-        bodyContents = new XElement(xmlns+"body","変換できない文字列が含まれています。");
+        bodyContents = new XElement(Xmlns+"body","変換できない文字列が含まれています。");
       }
       this.Add(
-          new XElement(xmlns + "html",
-            new XAttribute("xmlns", xmlns),
+          new XElement(Xmlns + "html",
+            new XAttribute("xmlns", Xmlns),
             new XAttribute(XNamespace.Xml + "lang", "ja"),
             new XAttribute("lang", "ja"),
-            new XElement(xmlns + "head",
-              new XElement(xmlns + "meta",
+            new XElement(Xmlns + "head",
+              new XElement(Xmlns + "meta",
                 new XAttribute("http-equiv", "Content-Type"),
                 new XAttribute("content", "application/xhtml+xml; charset=UTF-8")),
-              new XElement(xmlns + "title", title),
-              new XElement(xmlns + "link",
+              new XElement(Xmlns + "title", title),
+              new XElement(Xmlns + "link",
                 new XAttribute("rel", "stylesheet"),
                 new XAttribute("type", "text/css"),
                 new XAttribute("href", styleSheet)),
             bodyContents)));
     }
-
 
   }
 }

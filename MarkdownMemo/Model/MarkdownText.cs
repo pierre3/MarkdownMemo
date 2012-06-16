@@ -8,7 +8,7 @@ using System.IO;
 using System.ComponentModel;
 using MarkdownSharp;
 
-namespace MarkdownMemo
+namespace MarkdownMemo.Model
 {
   public class MarkdownText
   {
@@ -31,7 +31,7 @@ namespace MarkdownMemo
         OnTextChanged();
       }
     }
-    
+
     /// <summary>
     /// 現在編集中のテキストファイルのパス
     /// </summary>
@@ -46,7 +46,7 @@ namespace MarkdownMemo
     /// HTMLプレビューファイル名(フルパス)
     /// </summary>
     public string PreviewPath { get; set; }
-    
+
     /// <summary>
     /// スタイルシート(CSS)のファイル名
     /// (HTMLプレビューファイル保存先フォルダからの相対パス)
@@ -82,7 +82,7 @@ namespace MarkdownMemo
     /// <param name="cssName">
     /// CSSファイル名をHTMLプレビューファイル保存先からの相対パスで指定します
     /// </param>
-    public MarkdownText(string previewPath,string cssName)
+    public MarkdownText(string previewPath, string cssName)
     {
       OpenNew();
       this.PreviewPath = previewPath;
@@ -108,17 +108,17 @@ namespace MarkdownMemo
     /// <param name="fileName">ファイル名</param>
     public void OpenFrom(string fileName)
     {
-      if(!File.Exists(fileName))
+      if (!File.Exists(fileName))
         throw new FileNotFoundException();
 
       byte[] bytes;
-      using(var stream = new FileStream(fileName,FileMode.Open,FileAccess.Read))
+      using (var stream = new FileStream(fileName, FileMode.Open, FileAccess.Read))
       {
         bytes = stream.GetBytes();
       }
       var encoding = bytes.GetCode();
-        if(encoding == null)
-          throw new NotSupportedException();
+      if (encoding == null)
+        throw new NotSupportedException();
 
       this.Text = bytes.ToDecodedString(encoding);
       this.SourcePath = fileName;
@@ -133,12 +133,12 @@ namespace MarkdownMemo
     /// <param name="encoding">エンコーディング</param>
     public void OpenFrom(string fileName, Encoding encoding)
     {
-      if(!File.Exists(fileName))
+      if (!File.Exists(fileName))
         throw new FileNotFoundException();
       if (encoding == null)
         throw new ArgumentNullException();
 
-      using (var stream = new FileStream(fileName,FileMode.Open,FileAccess.Read))
+      using (var stream = new FileStream(fileName, FileMode.Open, FileAccess.Read))
       {
         this.Text = stream.GetBytes().ToDecodedString(encoding);
       }
@@ -153,7 +153,7 @@ namespace MarkdownMemo
     /// </summary>
     public bool Save()
     {
-      if(!File.Exists(this.SourcePath) || this.Encoding == null)
+      if (!File.Exists(this.SourcePath) || this.Encoding == null)
       {
         return false;
       }
@@ -189,17 +189,19 @@ namespace MarkdownMemo
       this.SourcePath = fileName;
       this.IsTextChanged = false;
     }
-    
+
     /// <summary>
     /// 編集中のMarkdownテキストをHTMLに変換します
     /// </summary>
     /// <param name="title">HTMLタイトル</param>
     /// <param name="cssName">CSSファイル名</param>
     /// <returns>XHTMLドキュメント</returns>
-    public XhtmlDocument ToXhtml(string title,string cssName)
+    public XhtmlDocument ToXhtml(string title, string cssName, IEnumerable<string> referenceItems)
     {
-      var mdString = new Markdown().Transform(this.Text);
-      return new XhtmlDocument(title,cssName,mdString);
+      var refText = referenceItems.Aggregate((a, b) => a + Environment.NewLine + b);
+
+      var mdString = new Markdown().Transform(this.Text + Environment.NewLine + refText);
+      return new XhtmlDocument(title, cssName, mdString);
     }
 
     /// <summary>
@@ -207,18 +209,40 @@ namespace MarkdownMemo
     /// </summary>
     /// <param name="fileName">ファイル名</param>
     /// <param name="tilte">タイトル</param>
-    public void SaveAsHtml(string fileName,string tilte)
+    public void SaveAsHtml(string fileName, string title, IEnumerable<string> referenceItems)
     {
+      var sourceDir = Path.GetDirectoryName(this.PreviewPath);
+      var destDir = Path.ChangeExtension(fileName, ".files");
+      var relativeDir = destDir.Replace(Path.GetDirectoryName(fileName), ".");
+    
+      var doc = this.ToXhtml(title, this.CssName, referenceItems);
+      var elements = doc.Descendants();
+      var query = elements.WithAttribute(XhtmlDocument.Xmlns + "link", "href", (e, a) => new { Elem = e, Attr = a })
+        .Concat(elements.WithAttribute(XhtmlDocument.Xmlns + "img", "src", (e, a) => new { Elem = e, Attr = a }))
+        .Concat(elements.WithAttribute(XhtmlDocument.Xmlns + "a", "href", (e, a) => new { Elem = e, Attr = a }));
       
+      foreach (var obj in query)
+      {
+        var name = obj.Attr.Value.Replace('/','\\');
+        var srcPath = Path.Combine(sourceDir, name);
+        var destPath = Path.Combine(relativeDir,Path.GetFileName(name));
+        if (!File.Exists(srcPath))
+        { continue; }
+
+        obj.Elem.SetAttributeValue(obj.Attr.Name, destPath.Replace('\\','/'));
+        Directory.CreateDirectory(destDir);
+        File.Copy(srcPath, Path.Combine(destDir,Path.GetFileName(name)), true);
+      }
+      doc.Save(fileName, SaveOptions.DisableFormatting | SaveOptions.OmitDuplicateNamespaces);
     }
 
     /// <summary>
     ///編集中のMarkdownテキストをHTMLプレビューファイルに変換し保存します
     /// </summary>
-    public void SavePreviewHtml()
+    public void SavePreviewHtml(IEnumerable<string> referenceItems)
     {
-      this.ToXhtml("Markdown Memo Preview",this.CssName).Save(this.PreviewPath, 
-        SaveOptions.DisableFormatting | SaveOptions.OmitDuplicateNamespaces );
+      this.ToXhtml("Markdown Memo Preview", this.CssName, referenceItems).Save(this.PreviewPath,
+        SaveOptions.DisableFormatting | SaveOptions.OmitDuplicateNamespaces);
     }
     #endregion
   }

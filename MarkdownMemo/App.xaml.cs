@@ -4,6 +4,9 @@ using System.Configuration;
 using System.Data;
 using System.Linq;
 using System.Windows;
+using System.Reactive.Linq;
+using System.Windows.Controls;
+using MarkdownMemo.ViewModel;
 
 namespace MarkdownMemo
 {
@@ -12,5 +15,42 @@ namespace MarkdownMemo
   /// </summary>
   public partial class App : Application
   {
+    protected override void OnStartup(StartupEventArgs e)
+    {
+      base.OnStartup(e);
+      var mainWindow = new MainWindow();
+
+      //プレビューファイル保存先
+      //複数プロセスでの起動を考慮して、プレビューファイルに自プロセスのIDを付加する
+      var processId = System.Diagnostics.Process.GetCurrentProcess().Id.ToString();
+      var previewPath = System.IO.Path.Combine(IOHelper.CreateAppDataDirectory(), processId + "_Preview.html");
+
+      //HTMLプレビュー更新のトリガイベント
+      var updateTrigger = Observable.FromEvent<TextChangedEventHandler, TextChangedEventArgs>(
+        h => (sender, args) => h(args),
+        h => mainWindow.textBox1.TextChanged += h,
+        h => mainWindow.textBox1.TextChanged -= h).Throttle(TimeSpan.FromMilliseconds(500));
+
+      //HTMLプレビュー更新依頼 コールバック
+      Action<string> requestPreview = path =>
+        this.Dispatcher.BeginInvoke(new Action(() =>
+          mainWindow.prevewBrowser.Navigate(new Uri(path))));
+
+      //ViewModelインスタンス生成
+      var viewModel = new MainwindowViewModel(previewPath, "style.css",
+        updateTrigger, requestPreview, e.Args.FirstOrDefault());
+
+      //ウインドウ終了依頼　コールバック
+      EventHandler handler = null;
+      handler = (_, __) =>
+      {
+        viewModel.RequestClose -= handler;
+        mainWindow.Close();
+      };
+      viewModel.RequestClose += handler;
+
+      mainWindow.DataContext = viewModel;
+      mainWindow.Show();
+    }
   }
 }

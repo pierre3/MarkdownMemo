@@ -8,6 +8,8 @@ using System.Xml.Linq;
 using MarkdownSharp;
 using System.Windows.Input;
 using Microsoft.Win32;
+using System.Linq;
+using MarkdownMemo.ViewModel;
 
 namespace MarkdownMemo
 {
@@ -22,36 +24,48 @@ namespace MarkdownMemo
     public MainWindow()
     {
       InitializeComponent();
-      
-      //プレビューファイル保存先
-      var previewPath = System.IO.Path.Combine(IOHelper.CreateAppDataDirectory(), "Preview.html");
-      //HTMLプレビュー更新のトリガイベント
-      var updateTrigger = Observable.FromEvent<TextChangedEventHandler, TextChangedEventArgs>(
-        h => (sender, args) => h(args),
-        h => textBox1.TextChanged += h,
-        h => textBox1.TextChanged -= h).Throttle(TimeSpan.FromMilliseconds(500));
-      //HTMLプレビュー更新依頼 コールバック
-      Action<string> requestPreview = path =>
-        this.Dispatcher.BeginInvoke(new Action(() =>
-          this.prevewBrowser.Navigate(new Uri(path))));
-      
-      //ViewModelインスタンス生成
-      var viewModel = new MainwindowViewModel(previewPath, "style.css",
-        updateTrigger, requestPreview);
-
-      //ウインドウ終了依頼　コールバック
-      EventHandler handler = null;
-      handler = (_, __) =>
-        {
-          viewModel.RequestClose -= handler;
-          this.Close();
-        };
-      viewModel.RequestClose += handler;
-
-      this.DataContext = viewModel;
-
     }
 
+    private void textBox1_previewDragOver(object sender, DragEventArgs e)
+    {
+      
+      var fileNames = e.Data.GetData(DataFormats.FileDrop) as string[];
+      var name = fileNames.FirstOrDefault();
+      if (!File.Exists(name))
+      { 
+        e.Effects = DragDropEffects.None;
+        return;
+      }
+      e.Effects = DragDropEffects.Copy;
+      e.Handled = true;
+    }
 
+    private void textBox1_previewDrop(object sender, DragEventArgs e)
+    {
+      
+      var fileNames = e.Data.GetData(DataFormats.FileDrop) as string[];
+      if (fileNames == null)
+      { return; }
+
+      var name = fileNames.FirstOrDefault();
+      var fileOpener = this.DataContext as IFileOpener;
+      if (fileOpener != null)
+        fileOpener.Open(name);
+      e.Handled = true;
+    }
+
+    private void window_Closed(object sender, EventArgs e)
+    {
+      var viewModel = this.DataContext as ITerminatable;
+      if (viewModel != null)
+      {
+        viewModel.Treminate();
+      }
+    }
+
+    private void MenuItem_Click(object sender, RoutedEventArgs e)
+    {
+
+    }
   }
 }

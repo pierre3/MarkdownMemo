@@ -66,10 +66,15 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="DelegateCommand.cs" />
-    <Compile Include="MarkdownText.cs" />
-    <Compile Include="IOHelper.cs" />
-    <Compile Include="XhtmlDocument.cs" />
-    <Compile Include="MainWindowViewModel.cs" />
+    <Compile Include="ViewModel\IFileOpener.cs" />
+    <Compile Include="ViewModel\ITerminatable.cs" />
+    <Compile Include="Model\LinkItem.cs" />
+    <Compile Include="Model\LinkItemCollection.cs" />
+    <Compile Include="Model\MarkdownText.cs" />
+    <Compile Include="Helper\IOHelper.cs" />
+    <Compile Include="Helper\XEnumerable.cs" />
+    <Compile Include="Model\XhtmlDocument.cs" />
+    <Compile Include="ViewModel\MainWindowViewModel.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -113,6 +118,7 @@
   <ItemGroup>
     <Content Include="lib\MarkdownSharp.dll" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
