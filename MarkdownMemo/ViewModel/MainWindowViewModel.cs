@@ -2,11 +2,12 @@
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Windows;
 using System.Windows.Input;
-using Microsoft.Win32;
-using System.Linq;
+using MarkdownMemo.Common;
 using MarkdownMemo.Model;
+using Microsoft.Win32;
 
 namespace MarkdownMemo.ViewModel
 {
@@ -30,7 +31,7 @@ namespace MarkdownMemo.ViewModel
     private string _linkPath;
     private LinkItemCollection _linkItems;
     private LinkItem _selectedLinkItem;
-    private int _caretIndex;
+    private int? _caretIndex;
     #endregion
 
     #region Properties
@@ -100,7 +101,7 @@ namespace MarkdownMemo.ViewModel
       }
     }
 
-    public int CaretIndex
+    public int? CaretIndex
     {
       get { return _caretIndex; }
       set
@@ -270,6 +271,7 @@ namespace MarkdownMemo.ViewModel
     public MainwindowViewModel(string previewPath, string cssName,
       IObservable<EventArgs> updatePreviewTrigger, Action<string> requestPreview, string startupFile)
     {
+      this.CaretIndex = 0;
       this._linkItemsFileName = Path.Combine(
         Path.GetDirectoryName(previewPath), "LinkItems.xml");
       LinkItems = LinkItemCollection.FromXml(_linkItemsFileName);
@@ -428,7 +430,7 @@ namespace MarkdownMemo.ViewModel
       if (SelectedLinkItem == null)
       { return; }
       var substring = string.Format("![][{0}]", SelectedLinkItem.ID);
-      this.Text = this.Text.Insert(CaretIndex, substring);
+      this.Text = this.Text.Insert(CaretIndex??0, substring);
     }
 
     /// <summary>

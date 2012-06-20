@@ -65,14 +65,15 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="DelegateCommand.cs" />
+    <Compile Include="Common\DelegateCommand.cs" />
+    <Compile Include="TextBoxHelper.cs" />
     <Compile Include="ViewModel\IFileOpener.cs" />
     <Compile Include="ViewModel\ITerminatable.cs" />
     <Compile Include="Model\LinkItem.cs" />
     <Compile Include="Model\LinkItemCollection.cs" />
     <Compile Include="Model\MarkdownText.cs" />
-    <Compile Include="Helper\IOHelper.cs" />
-    <Compile Include="Helper\XEnumerable.cs" />
+    <Compile Include="Common\IOHelper.cs" />
+    <Compile Include="Common\XEnumerable.cs" />
     <Compile Include="Model\XhtmlDocument.cs" />
     <Compile Include="ViewModel\MainWindowViewModel.cs" />
     <Page Include="MainWindow.xaml">

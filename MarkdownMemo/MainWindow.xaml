@@ -53,7 +53,8 @@
                  Text="{Binding Path=Text, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                  AllowDrop="True"
                  PreviewDragOver="textBox1_previewDragOver"
-                 PreviewDrop="textBox1_previewDrop"/>
+                 PreviewDrop="textBox1_previewDrop"
+                 c:TextBoxHelper.CaretPosition="{Binding CaretIndex,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
 
         <TabControl Grid.Column="2"
                     Grid.Row="1"

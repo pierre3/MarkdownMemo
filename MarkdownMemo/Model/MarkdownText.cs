@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Xml.Linq;
-using System.Windows.Input;
-using System.IO;
-using System.ComponentModel;
+using MarkdownMemo.Common;
 using MarkdownSharp;
 
 namespace MarkdownMemo.Model

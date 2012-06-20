@@ -1,14 +1,7 @@
 ﻿using System;
-using System.Diagnostics;
 using System.IO;
-using System.Reactive.Linq;
-using System.Windows;
-using System.Windows.Controls;
-using System.Xml.Linq;
-using MarkdownSharp;
-using System.Windows.Input;
-using Microsoft.Win32;
 using System.Linq;
+using System.Windows;
 using MarkdownMemo.ViewModel;
 
 namespace MarkdownMemo
@@ -24,6 +17,7 @@ namespace MarkdownMemo
     public MainWindow()
     {
       InitializeComponent();
+      textBox1.CaretIndex = 0;
     }
 
     private void textBox1_previewDragOver(object sender, DragEventArgs e)
