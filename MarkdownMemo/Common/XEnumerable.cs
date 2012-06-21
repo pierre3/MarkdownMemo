@@ -5,6 +5,9 @@ using System.Xml.Linq;
 
 namespace MarkdownMemo.Common
 {
+  /// <summary>
+  /// LINQ to XML の拡張メソッドを定義するクラス
+  /// </summary>
   public static class XEnumerable
   {
     /// <summary>

@@ -11,6 +11,9 @@ using Microsoft.Win32;
 
 namespace MarkdownMemo.ViewModel
 {
+  /// <summary>
+  /// メイン画面用ViewModelクラス
+  /// </summary>
   public class MainwindowViewModel : INotifyPropertyChanged, IFileOpener, ITerminatable
   {
     #region Fields
@@ -101,6 +104,7 @@ namespace MarkdownMemo.ViewModel
       }
     }
 
+    /// <summary>カレット位置</summary>
     public int? CaretIndex
     {
       get { return _caretIndex; }
@@ -167,6 +171,7 @@ namespace MarkdownMemo.ViewModel
       }
     }
 
+    /// <summary>Html形式で保存</summary>
     public ICommand SaveHtmlCommand
     {
       get 
@@ -241,15 +246,8 @@ namespace MarkdownMemo.ViewModel
         handler(this, new EventArgs());
     }
 
-    /// <summary>
-    /// プロパティ変更通知イベント
-    /// </summary>
+    /// <summary>プロパティ変更通知イベント</summary>
     public event PropertyChangedEventHandler PropertyChanged;
-
-    /// <summary>
-    /// プロパティ変更通知イベントを発生させます
-    /// </summary>
-    /// <param name="name">プロパティ名</param>
     private void OnPropertyChanged(string name)
     {
       PropertyChangedEventHandler handler = PropertyChanged;
@@ -268,6 +266,9 @@ namespace MarkdownMemo.ViewModel
     /// <param name="cssName">
     /// CSSファイル名をHTMLプレビューファイル保存先からの相対パスで指定します
     /// </param>
+    /// <param name="requestPreview">Viewによるプレビュー表示の更新を記述するデリゲート</param>
+    /// <param name="startupFile">起動時に読み込むファイルの名前</param>
+    /// <param name="updatePreviewTrigger">プレビュー表示の更新のトリガとなるイベントのIObservable</param>
     public MainwindowViewModel(string previewPath, string cssName,
       IObservable<EventArgs> updatePreviewTrigger, Action<string> requestPreview, string startupFile)
     {

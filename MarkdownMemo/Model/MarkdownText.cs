@@ -9,6 +9,9 @@ using MarkdownSharp;
 
 namespace MarkdownMemo.Model
 {
+  /// <summary>
+  /// Markdownテキストデータを管理するクラス
+  /// </summary>
   public class MarkdownText
   {
     #region Fields
@@ -60,9 +63,10 @@ namespace MarkdownMemo.Model
 
     #region Events
     /// <summary>
-    /// プロパティ変更通知イベント
+    /// Textプロパティ変更通知イベント
     /// </summary>
     public event Action TextChanged;
+    /// <summary>Textプロパティ変更通知イベント発生</summary>
     protected void OnTextChanged()
     {
       var handler = TextChanged;
@@ -194,6 +198,7 @@ namespace MarkdownMemo.Model
     /// </summary>
     /// <param name="title">HTMLタイトル</param>
     /// <param name="cssName">CSSファイル名</param>
+    /// <param name="referenceItems">参照ファイル登録用文字列のシーケンス</param>
     /// <returns>XHTMLドキュメント</returns>
     public XhtmlDocument ToXhtml(string title, string cssName, IEnumerable<string> referenceItems)
     {
@@ -207,7 +212,8 @@ namespace MarkdownMemo.Model
     /// 編集中のMarkdownテキストをHTMLに変換し、保存します
     /// </summary>
     /// <param name="fileName">ファイル名</param>
-    /// <param name="tilte">タイトル</param>
+    /// <param name="title">タイトル</param>
+    /// <param name="referenceItems">参照ファイル登録用文字列のシーケンス</param>
     public void SaveAsHtml(string fileName, string title, IEnumerable<string> referenceItems)
     {
       var sourceDir = Path.GetDirectoryName(this.PreviewPath);

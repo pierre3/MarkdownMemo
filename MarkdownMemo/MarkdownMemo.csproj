@@ -25,8 +25,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>
-    </DocumentationFile>
+    <DocumentationFile>bin\Debug\MarkdownMemo.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <PlatformTarget>x86</PlatformTarget>
@@ -36,8 +35,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>
-    </DocumentationFile>
+    <DocumentationFile>bin\Release\MarkdownMemo.XML</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="MarkdownSharp, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
@@ -66,13 +64,14 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Common\DelegateCommand.cs" />
+    <Compile Include="Common\PathHelper.cs" />
     <Compile Include="TextBoxHelper.cs" />
     <Compile Include="ViewModel\IFileOpener.cs" />
     <Compile Include="ViewModel\ITerminatable.cs" />
     <Compile Include="Model\LinkItem.cs" />
     <Compile Include="Model\LinkItemCollection.cs" />
     <Compile Include="Model\MarkdownText.cs" />
-    <Compile Include="Common\IOHelper.cs" />
+    <Compile Include="Common\TextIOHelper.cs" />
     <Compile Include="Common\XEnumerable.cs" />
     <Compile Include="Model\XhtmlDocument.cs" />
     <Compile Include="ViewModel\MainWindowViewModel.cs" />

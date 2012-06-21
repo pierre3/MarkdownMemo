@@ -19,7 +19,7 @@
         </Grid.ColumnDefinitions>
 
         <Menu Grid.Row="0" Grid.ColumnSpan="3" >
-            <MenuItem Header="ファイル(_F)" Click="MenuItem_Click">
+            <MenuItem Header="ファイル(_F)">
                 <MenuItem Header="新規作成(_N)"  Command="{Binding Path=NewCommand}"/>
                 <MenuItem Header="開く(_O)..." Command="{Binding Path=OpenCommand}"/>
                 <Separator/>

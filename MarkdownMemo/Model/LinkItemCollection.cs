@@ -4,9 +4,16 @@ using System.Xml.Serialization;
 
 namespace MarkdownMemo.Model
 {
+  /// <summary>
+  /// 参照アイテムオブジェクトのコレクション
+  /// </summary>
   public class LinkItemCollection : ObservableCollection<LinkItem>
   {
-
+    /// <summary>
+    /// Xmlファイルから生成
+    /// </summary>
+    /// <param name="fileName">ファイル名</param>
+    /// <returns>LinkItemCollectionのインスタンス</returns>
     public static LinkItemCollection FromXml(string fileName)
     {
       if (!File.Exists(fileName))
@@ -19,6 +26,10 @@ namespace MarkdownMemo.Model
       }
     }
 
+    /// <summary>
+    /// Xmlファイルへ保存
+    /// </summary>
+    /// <param name="fileName">ファイル名</param>
     public void ToXml(string fileName)
     {
       using (var stream = new FileStream(fileName, FileMode.Create, FileAccess.Write))

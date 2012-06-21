@@ -4,21 +4,13 @@ using System.Text;
 
 namespace MarkdownMemo.Common
 {
-  public static class IOHelper
-  {
-    /// <summary>
-    /// "%ApplicationData%\(拡張子を省いた実行ファイル名)" のフォルダを作成する
-    /// </summary>
-    /// <returns>作成したフォルダのパス</returns>
-    public static string CreateAppDataDirectory()
-    {
-      var dir = Path.Combine(
-              Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-              Path.GetFileNameWithoutExtension(Environment.GetCommandLineArgs()[0]));
-      Directory.CreateDirectory(dir);
-      return dir;
-    }
 
+  /// <summary>
+  /// テキストデータの入出力に関する処理を補助するクラス
+  /// </summary>
+  public static class TextIOHelper
+  {
+    
     /// <summary>
     /// ストリームから読み込んだデータをバイト型配列として取得します
     /// </summary>

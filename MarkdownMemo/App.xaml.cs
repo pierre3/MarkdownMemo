@@ -13,6 +13,9 @@ namespace MarkdownMemo
   /// </summary>
   public partial class App : Application
   {
+    /// <summary>
+    /// OnStartup
+    /// </summary>
     protected override void OnStartup(StartupEventArgs e)
     {
       base.OnStartup(e);
@@ -21,7 +24,7 @@ namespace MarkdownMemo
       //プレビューファイル保存先
       //複数プロセスでの起動を考慮して、プレビューファイルに自プロセスのIDを付加する
       var processId = System.Diagnostics.Process.GetCurrentProcess().Id.ToString();
-      var previewPath = System.IO.Path.Combine(IOHelper.CreateAppDataDirectory(), processId + "_Preview.html");
+      var previewPath = System.IO.Path.Combine(PathHelper.CreateAppDataDirectory(), processId + "_Preview.html");
 
       //HTMLプレビュー更新のトリガイベント
       var updateTrigger = Observable.FromEvent<TextChangedEventHandler, TextChangedEventArgs>(

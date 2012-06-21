@@ -17,9 +17,11 @@ namespace MarkdownMemo
     public MainWindow()
     {
       InitializeComponent();
-      textBox1.CaretIndex = 0;
     }
 
+    /// <summary>
+    /// テキストボックスにファイルをドラッグした際の処理
+    /// </summary>
     private void textBox1_previewDragOver(object sender, DragEventArgs e)
     {
       
@@ -34,6 +36,9 @@ namespace MarkdownMemo
       e.Handled = true;
     }
 
+    /// <summary>
+    /// テキストボックスにファイルをドロップした際の処理
+    /// </summary>
     private void textBox1_previewDrop(object sender, DragEventArgs e)
     {
       
@@ -48,6 +53,9 @@ namespace MarkdownMemo
       e.Handled = true;
     }
 
+    /// <summary>
+    /// ウィンドウを閉じる際の処理
+    /// </summary>
     private void window_Closed(object sender, EventArgs e)
     {
       var viewModel = this.DataContext as ITerminatable;
@@ -55,11 +63,6 @@ namespace MarkdownMemo
       {
         viewModel.Treminate();
       }
-    }
-
-    private void MenuItem_Click(object sender, RoutedEventArgs e)
-    {
-
     }
   }
 }
