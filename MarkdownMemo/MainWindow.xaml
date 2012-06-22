@@ -6,8 +6,13 @@
         Height="768" 
         Width="900"
         Closed="window_Closed">
-
-    <Grid>
+    <Window.InputBindings>
+        <KeyBinding Gesture="Ctrl+S" Command="{Binding Path=SaveCommand}"/>
+        <KeyBinding Gesture="Ctrl+O" Command="{Binding Path=OpenCommand}"/>
+        <KeyBinding Gesture="Ctrl+N" Command="{Binding Path=NewCommand}"/>
+        <KeyBinding Gesture="Ctrl+Shift+S" Command="{Binding Path=SaveAsCommand}"/>
+    </Window.InputBindings>
+        <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition />
@@ -20,13 +25,22 @@
 
         <Menu Grid.Row="0" Grid.ColumnSpan="3" >
             <MenuItem Header="ファイル(_F)">
-                <MenuItem Header="新規作成(_N)"  Command="{Binding Path=NewCommand}"/>
-                <MenuItem Header="開く(_O)..." Command="{Binding Path=OpenCommand}"/>
+                <MenuItem Header="新規作成(_N)"
+                          InputGestureText="Ctrl+N"
+                          Command="{Binding Path=NewCommand}"/>
+                <MenuItem Header="開く(_O)..." 
+                          InputGestureText="Ctrl+O"
+                          Command="{Binding Path=OpenCommand}"/>
                 <Separator/>
-                <MenuItem Header="上書き保存(_S)" Command="{Binding Path=SaveCommand}"/>
-                <MenuItem Header="名前を付けて保存(_A)..." Command="{Binding Path=SaveAsCommand}"/>
+                <MenuItem Header="上書き保存(_S)" 
+                          InputGestureText="Ctrl+S"
+                          Command="{Binding Path=SaveCommand}"/>
+                <MenuItem Header="名前を付けて保存(_A)..." 
+                          InputGestureText="Ctrl+Shift+S"
+                          Command="{Binding Path=SaveAsCommand}"/>
                 <Separator/>
-                <MenuItem Header="HTML形式で保存(_W)..." Command="{Binding Path=SaveHtmlCommand}"/>
+                <MenuItem Header="HTML形式で保存(_W)..." 
+                          Command="{Binding Path=SaveHtmlCommand}"/>
                 <Separator/>
                 <MenuItem Header="終了(_X)" 
                           Command="{Binding Path=ExitCommand}"

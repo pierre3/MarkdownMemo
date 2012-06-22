@@ -24,7 +24,9 @@ namespace MarkdownMemo
       //プレビューファイル保存先
       //複数プロセスでの起動を考慮して、プレビューファイルに自プロセスのIDを付加する
       var processId = System.Diagnostics.Process.GetCurrentProcess().Id.ToString();
-      var previewPath = System.IO.Path.Combine(PathHelper.CreateAppDataDirectory(), processId + "_Preview.html");
+      var userDir = PathHelper.CreateAppDataDirectory();
+      System.IO.Directory.CreateDirectory(System.IO.Path.Combine(userDir, "image"));
+      var previewPath = System.IO.Path.Combine(userDir, processId + "_Preview.html");
 
       //HTMLプレビュー更新のトリガイベント
       var updateTrigger = Observable.FromEvent<TextChangedEventHandler, TextChangedEventArgs>(

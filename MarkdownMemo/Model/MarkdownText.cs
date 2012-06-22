@@ -202,8 +202,11 @@ namespace MarkdownMemo.Model
     /// <returns>XHTMLドキュメント</returns>
     public XhtmlDocument ToXhtml(string title, string cssName, IEnumerable<string> referenceItems)
     {
-      var refText = referenceItems.Aggregate((a, b) => a + Environment.NewLine + b);
-
+      var refText = string.Empty;
+      if (referenceItems != null && referenceItems.Count() > 0)
+      {
+        refText = referenceItems.Aggregate((a, b) => a + Environment.NewLine + b);
+      }
       var mdString = new Markdown().Transform(this.Text + Environment.NewLine + refText);
       return new XhtmlDocument(title, cssName, mdString);
     }
