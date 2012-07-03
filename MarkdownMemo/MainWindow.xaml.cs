@@ -24,11 +24,14 @@ namespace MarkdownMemo
     /// </summary>
     private void textBox1_previewDragOver(object sender, DragEventArgs e)
     {
-      
+
       var fileNames = e.Data.GetData(DataFormats.FileDrop) as string[];
+      if (fileNames == null)
+      { return; }
+
       var name = fileNames.FirstOrDefault();
       if (!File.Exists(name))
-      { 
+      {
         e.Effects = DragDropEffects.None;
         return;
       }
@@ -41,7 +44,7 @@ namespace MarkdownMemo
     /// </summary>
     private void textBox1_previewDrop(object sender, DragEventArgs e)
     {
-      
+
       var fileNames = e.Data.GetData(DataFormats.FileDrop) as string[];
       if (fileNames == null)
       { return; }

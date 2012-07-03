@@ -174,10 +174,10 @@ namespace MarkdownMemo.ViewModel
     /// <summary>Html形式で保存</summary>
     public ICommand SaveHtmlCommand
     {
-      get 
-      { 
-        if(_saveHtml==null)
-          _saveHtml = new DelegateCommand(_=>SaveHtml());
+      get
+      {
+        if (_saveHtml == null)
+          _saveHtml = new DelegateCommand(_ => SaveHtml());
         return _saveHtml;
       }
     }
@@ -343,9 +343,9 @@ namespace MarkdownMemo.ViewModel
       dialog.Filter = "Webページ(*.html;*.htm)|*.html;*.htm";
       if (dialog.ShowDialog() == true)
       {
-        _markdownText.SaveAsHtml(dialog.FileName, 
+        _markdownText.SaveAsHtml(dialog.FileName,
           Path.GetFileNameWithoutExtension(dialog.FileName),
-          LinkItems.Select(item => string.Format("[{0}]: {1}", item.ID, item.Path)));
+          LinkItems.Select(item => item.ToString()));
       }
     }
 
@@ -371,18 +371,27 @@ namespace MarkdownMemo.ViewModel
     /// <summary>参照ファイルの追加</summary>
     private void AddLinkItem()
     {
-      var path = Path.Combine("image", Path.GetFileName(LinkPath));
-      var dest = Path.Combine(Path.GetDirectoryName(_markdownText.PreviewPath), path);
-      try
+      string path;
+      if (File.Exists(LinkPath))
       {
-        File.Copy(LinkPath, dest);
+        path = Path.Combine("image", Path.GetFileName(LinkPath));
+        var dest = Path.Combine(Path.GetDirectoryName(_markdownText.PreviewPath), path);
+        try
+        {
+          File.Copy(LinkPath, dest);
+        }
+        catch (Exception e)
+        {
+          MessageBox.Show(e.Message);
+          return;
+        }
       }
-      catch (Exception e)
+      else
       {
-        MessageBox.Show(e.Message);
-        return;
+        path = LinkPath;
       }
       LinkItems.Add(new LinkItem(LinkName, path.Replace('\\', '/')));
+
       LinkName = string.Empty;
       LinkPath = string.Empty;
     }
@@ -393,7 +402,8 @@ namespace MarkdownMemo.ViewModel
     /// <returns>追加可能な場合True</returns>
     private bool CanAddLinkItem()
     {
-      return File.Exists(LinkPath)
+      return !string.IsNullOrEmpty(LinkPath) 
+        && !string.IsNullOrEmpty(LinkName)
         && !LinkItems.Any(item => item.ID == LinkName);
     }
 
@@ -430,8 +440,17 @@ namespace MarkdownMemo.ViewModel
     {
       if (SelectedLinkItem == null)
       { return; }
-      var substring = string.Format("![][{0}]", SelectedLinkItem.ID);
-      this.Text = this.Text.Insert(CaretIndex??0, substring);
+      var path = Path.Combine(Path.GetDirectoryName(_markdownText.PreviewPath), SelectedLinkItem.Path);
+      var substring = default(string);
+      if (File.Exists(path))
+      {
+        substring = string.Format("![Alt?][{0}]", SelectedLinkItem.ID);
+      }
+      else
+      {
+        substring = string.Format("[Link Text?][{0}]", SelectedLinkItem.ID);
+      }
+      this.Text = this.Text.Insert(CaretIndex ?? 0, substring);
     }
 
     /// <summary>
@@ -446,14 +465,18 @@ namespace MarkdownMemo.ViewModel
     /// <summary>参照ファイルの削除</summary>
     private void DeleteLinkItem()
     {
-      try
+      var path = Path.Combine(Path.GetDirectoryName(_markdownText.PreviewPath), SelectedLinkItem.Path);
+      if (File.Exists(path))
       {
-        File.Delete(Path.Combine(Path.GetDirectoryName(_markdownText.PreviewPath), SelectedLinkItem.Path));
-      }
-      catch (Exception e)
-      {
-        MessageBox.Show(e.Message);
-        return;
+        try
+        {
+          File.Delete(path);
+        }
+        catch (Exception e)
+        {
+          MessageBox.Show(e.Message);
+          return;
+        }
       }
       LinkItems.Remove(SelectedLinkItem);
     }

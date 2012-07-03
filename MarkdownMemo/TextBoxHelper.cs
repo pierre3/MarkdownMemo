@@ -56,8 +56,11 @@ namespace MarkdownMemo
       var newValue = e.NewValue as int?;
       if (oldValue == null && newValue != null)
       {
-
         textBox.SelectionChanged += textBox_selectionChanged;
+      }
+      else if (oldValue != null && newValue == null)
+      {
+        textBox.SelectionChanged -= textBox_selectionChanged;
       }
 
       if ((int)e.NewValue != textBox.CaretIndex)

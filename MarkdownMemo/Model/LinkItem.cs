@@ -82,7 +82,7 @@ namespace MarkdownMemo.Model
     /// <returns>文字列</returns>
     public override string ToString()
     {
-      return string.Format("[{0}]: {1}", this.ID, System.IO.Path.GetFileName(this.Path));
+      return string.Format("[{0}]: {1}", ID, Path);
     }
     #endregion
   }
