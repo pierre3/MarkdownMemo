@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Xml;
 using System.Xml.Linq;
 using MarkdownMemo.Common;
 using MarkdownSharp;
@@ -241,7 +242,14 @@ namespace MarkdownMemo.Model
         Directory.CreateDirectory(destDir);
         File.Copy(srcPath, Path.Combine(destDir,Path.GetFileName(name)), true);
       }
-      doc.Save(fileName, SaveOptions.DisableFormatting | SaveOptions.OmitDuplicateNamespaces);
+      var settings = new XmlWriterSettings();
+      settings.Indent = true;
+      settings.IndentChars = "";
+      settings.NamespaceHandling = NamespaceHandling.OmitDuplicates;
+      using (var writer = XmlWriter.Create(fileName,settings))
+      {
+        doc.Save(writer);
+      }
     }
 
     /// <summary>
@@ -249,8 +257,15 @@ namespace MarkdownMemo.Model
     /// </summary>
     public void SavePreviewHtml(IEnumerable<string> referenceItems)
     {
-      this.ToXhtml("Markdown Memo Preview", this.CssName, referenceItems).Save(this.PreviewPath,
-        SaveOptions.DisableFormatting | SaveOptions.OmitDuplicateNamespaces);
+      var doc = this.ToXhtml("Markdown Memo Preview", this.CssName, referenceItems);
+      var settings = new XmlWriterSettings();
+      settings.Indent = true;
+      settings.IndentChars = "";
+      settings.NamespaceHandling = NamespaceHandling.OmitDuplicates;
+      using (var writer = XmlWriter.Create(this.PreviewPath,settings))
+      {
+        doc.Save(writer);
+      }
     }
     #endregion
   }
