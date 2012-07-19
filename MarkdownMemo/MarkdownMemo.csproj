@@ -65,6 +65,7 @@
     </ApplicationDefinition>
     <Compile Include="Common\DelegateCommand.cs" />
     <Compile Include="Common\PathHelper.cs" />
+    <Compile Include="Messenger\IMessage.cs" />
     <Compile Include="TextBoxHelper.cs" />
     <Compile Include="ViewModel\IFileOpener.cs" />
     <Compile Include="ViewModel\ITerminatable.cs" />
@@ -75,6 +76,13 @@
     <Compile Include="Common\XEnumerable.cs" />
     <Compile Include="Model\XhtmlDocument.cs" />
     <Compile Include="ViewModel\MainWindowViewModel.cs" />
+    <Compile Include="ViewModel\ViewModelBase.cs" />
+    <Compile Include="Messenger\DialogBoxMessage.cs" />
+    <Compile Include="Messenger\IViewAction.cs" />
+    <Compile Include="Messenger\DialogBoxAction.cs" />
+    <Compile Include="Messenger\ActionCollection.cs" />
+    <Compile Include="Messenger\Messenger.cs" />
+    <Compile Include="Messenger\MessengerBehavior.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

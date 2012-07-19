@@ -12,7 +12,12 @@
         <KeyBinding Gesture="Ctrl+N" Command="{Binding Path=NewCommand}"/>
         <KeyBinding Gesture="Ctrl+Shift+S" Command="{Binding Path=SaveAsCommand}"/>
     </Window.InputBindings>
-        <Grid>
+    <c:MessengerBehavior.Actions>
+        <c:ActionCollection SourceObject="{Binding Path=Messenger}">
+            <c:DialogBoxAction/>
+        </c:ActionCollection>
+    </c:MessengerBehavior.Actions>
+    <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition />

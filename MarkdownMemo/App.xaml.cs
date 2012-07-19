@@ -53,6 +53,7 @@ namespace MarkdownMemo
       viewModel.RequestClose += handler;
 
       mainWindow.DataContext = viewModel;
+      //Messenger.Default.Register<DialogMessage>(viewModel, MarkdownMemo.MainWindow.ShowMessageBox);
       mainWindow.Show();
     }
   }

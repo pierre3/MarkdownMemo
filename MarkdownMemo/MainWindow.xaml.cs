@@ -17,7 +17,13 @@ namespace MarkdownMemo
     public MainWindow()
     {
       InitializeComponent();
+      
     }
+
+    //public static void ShowMessageBox(DialogBoxMessage message)
+    //{
+    //  message.Result = MessageBox.Show(message.Text, message.Caption, message.Button, message.Image);
+    //}
 
     /// <summary>
     /// テキストボックスにファイルをドラッグした際の処理
@@ -66,6 +72,7 @@ namespace MarkdownMemo
       {
         viewModel.Treminate();
       }
+     
     }
   }
 }

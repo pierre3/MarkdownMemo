@@ -14,7 +14,7 @@ namespace MarkdownMemo.ViewModel
   /// <summary>
   /// メイン画面用ViewModelクラス
   /// </summary>
-  public class MainwindowViewModel : INotifyPropertyChanged, IFileOpener, ITerminatable
+  public class MainwindowViewModel : ViewModelBase, IFileOpener, ITerminatable
   {
     #region Fields
     private string _title;
@@ -114,6 +114,8 @@ namespace MarkdownMemo.ViewModel
         OnPropertyChanged("CaretIndex");
       }
     }
+
+    public Messenger Messenger { set; get; }
 
     #region commands
     /// <summary>新規作成</summary>
@@ -245,15 +247,6 @@ namespace MarkdownMemo.ViewModel
       if (handler != null)
         handler(this, new EventArgs());
     }
-
-    /// <summary>プロパティ変更通知イベント</summary>
-    public event PropertyChangedEventHandler PropertyChanged;
-    private void OnPropertyChanged(string name)
-    {
-      PropertyChangedEventHandler handler = PropertyChanged;
-      if (handler != null)
-        handler(this, new PropertyChangedEventArgs(name));
-    }
     #endregion
 
     #region Constructor
@@ -272,6 +265,7 @@ namespace MarkdownMemo.ViewModel
     public MainwindowViewModel(string previewPath, string cssName,
       IObservable<EventArgs> updatePreviewTrigger, Action<string> requestPreview, string startupFile)
     {
+      this.Messenger = new Messenger();
       this.CaretIndex = 0;
       this._linkItemsFileName = Path.Combine(
         Path.GetDirectoryName(previewPath), "LinkItems.xml");
@@ -500,6 +494,8 @@ namespace MarkdownMemo.ViewModel
     /// </summary>
     void ITerminatable.Treminate()
     {
+      if (!ConfirmSaveFile())
+      { return; }
       this.LinkItems.ToXml(_linkItemsFileName);
       File.Delete(_markdownText.PreviewPath);
     }
@@ -519,13 +515,15 @@ namespace MarkdownMemo.ViewModel
         return true;
       }
 
-      var result = MessageBox.Show("編集中のテキストが保存されていません。上書き保存しますか？", "Markdown Memo",
-          MessageBoxButton.YesNoCancel);
-      if (result == MessageBoxResult.Cancel)
+      var message = new DialogBoxMessage(this,"編集中のテキストが保存されていません。上書き保存しますか？", "Markdown Memo",
+          MessageBoxButton.YesNoCancel, MessageBoxImage.Question);
+      this.Messenger.Send(this, message);
+      
+      if (message.Result == MessageBoxResult.Cancel)
       {
         return false;
       }
-      else if (result == MessageBoxResult.Yes)
+      else if (message.Result == MessageBoxResult.Yes)
       {
         Save();
       }
