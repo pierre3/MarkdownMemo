@@ -65,7 +65,10 @@
     </ApplicationDefinition>
     <Compile Include="Common\DelegateCommand.cs" />
     <Compile Include="Common\PathHelper.cs" />
-    <Compile Include="Messenger\IMessage.cs" />
+    <Compile Include="Messenger\ViewAction\OpenFileDialogAction.cs" />
+    <Compile Include="Messenger\Message\OpenFileDialogMessage.cs" />
+    <Compile Include="Messenger\ViewAction\SaveFileDialogAction.cs" />
+    <Compile Include="Messenger\Message\SaveFileDialogMessage.cs" />
     <Compile Include="TextBoxHelper.cs" />
     <Compile Include="ViewModel\IFileOpener.cs" />
     <Compile Include="ViewModel\ITerminatable.cs" />
@@ -77,9 +80,9 @@
     <Compile Include="Model\XhtmlDocument.cs" />
     <Compile Include="ViewModel\MainWindowViewModel.cs" />
     <Compile Include="ViewModel\ViewModelBase.cs" />
-    <Compile Include="Messenger\DialogBoxMessage.cs" />
-    <Compile Include="Messenger\IViewAction.cs" />
-    <Compile Include="Messenger\DialogBoxAction.cs" />
+    <Compile Include="Messenger\Message\DialogBoxMessage.cs" />
+    <Compile Include="Messenger\ViewAction\IViewAction.cs" />
+    <Compile Include="Messenger\ViewAction\DialogBoxAction.cs" />
     <Compile Include="Messenger\ActionCollection.cs" />
     <Compile Include="Messenger\Messenger.cs" />
     <Compile Include="Messenger\MessengerBehavior.cs" />

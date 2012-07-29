@@ -1,5 +1,4 @@
 ﻿using System;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -7,7 +6,6 @@ using System.Windows;
 using System.Windows.Input;
 using MarkdownMemo.Common;
 using MarkdownMemo.Model;
-using Microsoft.Win32;
 
 namespace MarkdownMemo.ViewModel
 {
@@ -115,6 +113,7 @@ namespace MarkdownMemo.ViewModel
       }
     }
 
+    /// <summary>メッセンジャー</summary>
     public Messenger Messenger { set; get; }
 
     #region commands
@@ -318,13 +317,13 @@ namespace MarkdownMemo.ViewModel
     /// <summary>名前を付けて保存(N)</summary>
     private void SaveAs()
     {
-      var dialog = new SaveFileDialog();
-      dialog.DefaultExt = ".md";
-      dialog.Filter = "MarkDownファイル(*.md;*.markdown)|*.md;*.markdown"
+      var message = new SaveFileDialogMessage();
+      message.DefaultExt = ".md";
+      message.Filter = "MarkDownファイル(*.md;*.markdown)|*.md;*.markdown"
                     + "|テキストファイル(*.txt)|*.txt";
-      if (dialog.ShowDialog() == true)
+      if (message.Result == true)
       {
-        _markdownText.SaveTo(dialog.FileName);
+        _markdownText.SaveTo(message.FileName);
         SetTitle();
       }
     }
@@ -332,13 +331,14 @@ namespace MarkdownMemo.ViewModel
     /// <summary>HTML形式で保存</summary>
     private void SaveHtml()
     {
-      var dialog = new SaveFileDialog();
-      dialog.DefaultExt = ".html";
-      dialog.Filter = "Webページ(*.html;*.htm)|*.html;*.htm";
-      if (dialog.ShowDialog() == true)
+      var message = new SaveFileDialogMessage();
+      message.DefaultExt = ".html";
+      message.Filter = "Webページ(*.html;*.htm)|*.html;*.htm";
+      this.Messenger.Send(this, message);
+      if (message.Result == true)
       {
-        _markdownText.SaveAsHtml(dialog.FileName,
-          Path.GetFileNameWithoutExtension(dialog.FileName),
+        _markdownText.SaveAsHtml(message.FileName,
+          Path.GetFileNameWithoutExtension(message.FileName),
           LinkItems.Select(item => item.ToString()));
       }
     }
@@ -348,15 +348,15 @@ namespace MarkdownMemo.ViewModel
     {
       if (ConfirmSaveFile())
       {
-        var dialog = new OpenFileDialog();
-        dialog.DefaultExt = ".txt";
-        dialog.Filter = "MarkDownファイル(*.md;*.markdown)|*.md;*.markdown"
+        var message = new OpenFileDialogMessage();
+        message.DefaultExt = ".md";
+        message.Filter = "MarkDownファイル(*.md;*.markdown)|*.md;*.markdown"
                       + "|テキストファイル(*.txt)|*.txt"
                       + "|全てのファイル(*.*)|*.*";
-        dialog.Multiselect = false;
-        if (dialog.ShowDialog() == true)
+        this.Messenger.Send(this,message);
+        if (message.Result == true)
         {
-          _markdownText.OpenFrom(dialog.FileName);
+          _markdownText.OpenFrom(message.FileName);
           SetTitle();
         }
       }
@@ -404,14 +404,17 @@ namespace MarkdownMemo.ViewModel
     /// <summary>参照ファイルを開く</summary>
     private void OpenLinkItem()
     {
-      var dialog = new OpenFileDialog();
-      dialog.Filter = "画像ファイル(*.png;*.gif;*.jpg;*.jpeg)|*.png;*.gif;*.jpg;*.jpeg"
+      var message = new OpenFileDialogMessage();
+      
+      message.Filter = "画像ファイル(*.png;*.gif;*.jpg;*.jpeg)|*.png;*.gif;*.jpg;*.jpeg"
                     + "|Webドキュメント(*.htm*)|*.htm*";
-      if (dialog.ShowDialog() == true)
+      this.Messenger.Send(this, message);
+      
+      if (message.Result == true)
       {
-        if (File.Exists(dialog.FileName))
+        if (File.Exists(message.FileName))
         {
-          this.LinkPath = dialog.FileName;
+          this.LinkPath = message.FileName;
           if (string.IsNullOrEmpty(this.LinkName))
           {
             LinkName = Path.GetFileNameWithoutExtension(LinkPath);
@@ -515,7 +518,7 @@ namespace MarkdownMemo.ViewModel
         return true;
       }
 
-      var message = new DialogBoxMessage(this,"編集中のテキストが保存されていません。上書き保存しますか？", "Markdown Memo",
+      var message = new DialogBoxMessage("編集中のテキストが保存されていません。上書き保存しますか？", "Markdown Memo",
           MessageBoxButton.YesNoCancel, MessageBoxImage.Question);
       this.Messenger.Send(this, message);
       
