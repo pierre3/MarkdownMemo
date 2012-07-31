@@ -12,7 +12,8 @@ namespace MarkdownMemo.ViewModel
   /// <summary>
   /// メイン画面用ViewModelクラス
   /// </summary>
-  public class MainwindowViewModel : ViewModelBase, IFileOpener, ITerminatable
+  public class MainwindowViewModel : ViewModelBase, 
+    IFileOpener, ITerminatable
   {
     #region Fields
     private string _title;
@@ -495,7 +496,7 @@ namespace MarkdownMemo.ViewModel
     /// <summary>
     /// 後始末
     /// </summary>
-    void ITerminatable.Treminate()
+    void ITerminatable.Terminate()
     {
       if (!ConfirmSaveFile())
       { return; }

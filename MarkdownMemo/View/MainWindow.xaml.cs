@@ -2,14 +2,13 @@
 using System.IO;
 using System.Linq;
 using System.Windows;
-using MarkdownMemo.ViewModel;
 
 namespace MarkdownMemo
 {
   /// <summary>
   /// MainWindow.xaml の相互作用ロジック
   /// </summary>
-  public partial class MainWindow : Window
+  public partial class MainWindow : WindowView
   {
     /// <summary>
     /// コンストラクタ
@@ -17,13 +16,8 @@ namespace MarkdownMemo
     public MainWindow()
     {
       InitializeComponent();
-      
     }
 
-    //public static void ShowMessageBox(DialogBoxMessage message)
-    //{
-    //  message.Result = MessageBox.Show(message.Text, message.Caption, message.Button, message.Image);
-    //}
 
     /// <summary>
     /// テキストボックスにファイルをドラッグした際の処理
@@ -56,9 +50,7 @@ namespace MarkdownMemo
       { return; }
 
       var name = fileNames.FirstOrDefault();
-      var fileOpener = this.DataContext as IFileOpener;
-      if (fileOpener != null)
-        fileOpener.Open(name);
+      this.OpenFile(name);
       e.Handled = true;
     }
 
@@ -67,12 +59,7 @@ namespace MarkdownMemo
     /// </summary>
     private void window_Closed(object sender, EventArgs e)
     {
-      var viewModel = this.DataContext as ITerminatable;
-      if (viewModel != null)
-      {
-        viewModel.Treminate();
-      }
-     
+      this.TerminateViewModel();
     }
   }
 }

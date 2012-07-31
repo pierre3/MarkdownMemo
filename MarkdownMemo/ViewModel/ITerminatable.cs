@@ -9,6 +9,6 @@ namespace MarkdownMemo.ViewModel
     /// <summary>
     /// 後始末
     /// </summary>
-    void Treminate();
+    void Terminate();
   }
 }

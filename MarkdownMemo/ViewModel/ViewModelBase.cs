@@ -1,13 +1,4 @@
-﻿using System;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Windows;
-using System.Windows.Input;
-using MarkdownMemo.Common;
-using MarkdownMemo.Model;
-using Microsoft.Win32;
+﻿using System.ComponentModel;
 
 namespace MarkdownMemo.ViewModel
 {
@@ -33,5 +24,6 @@ namespace MarkdownMemo.ViewModel
         handler(this, new PropertyChangedEventArgs(name));
       }
     }
+   
   }
 }

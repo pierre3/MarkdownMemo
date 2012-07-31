@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 
-namespace MarkdownMemo
+namespace MarkdownMemo.Common
 {
   /// <summary>
   /// メッセンジャービヘイビア

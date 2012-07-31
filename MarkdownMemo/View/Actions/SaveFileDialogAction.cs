@@ -1,25 +1,19 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Windows.Controls;
-using System.Windows;
-using MarkdownMemo.ViewModel;
+﻿using System.Windows;
+using MarkdownMemo.Common;
 using Microsoft.Win32;
 
 namespace MarkdownMemo
 {
 
   /// <summary>
-  /// ファイルを開くダイアログViewアクション
+  /// ファイル保存ダイアログを表示するViewAction
   /// </summary>
-  public class OpenFileDialogAction : IViewAction
+  public class SaveFileDialogAction : IViewAction
   {
     /// <summary>
     /// コンストラクタ
     /// </summary>
-    public OpenFileDialogAction()
+    public SaveFileDialogAction()
     {}
 
     /// <summary>
@@ -29,22 +23,21 @@ namespace MarkdownMemo
     /// <param name="messenger">メッセンジャー</param>
     public void Register(FrameworkElement recipient, Messenger messenger)
     {
-      messenger.Register<OpenFileDialogMessage>(recipient, ShowFileOpenDialog);
+      messenger.Register<SaveFileDialogMessage>(recipient, ShowSaveFileDialog);
     }
 
     /// <summary>
-    /// ファイルを開くダイアログを表示
+    /// ファイル保存ダイアログの表示
     /// </summary>
     /// <param name="message">メッセージオブジェクト</param>
-    private void ShowFileOpenDialog(OpenFileDialogMessage message)
+    private void ShowSaveFileDialog(SaveFileDialogMessage message)
     {
-      var dialog = new OpenFileDialog();
+      var dialog = new SaveFileDialog();
       dialog.Filter = message.Filter;
       dialog.FilterIndex = message.FilterIndex;
       dialog.InitialDirectory = message.InitialDirectory;
       dialog.Title = message.Title;
-      dialog.Multiselect = message.Multiselect;
-
+      
       message.Result = dialog.ShowDialog();
       message.FileName = dialog.FileName;
       message.FileNames = dialog.FileNames;

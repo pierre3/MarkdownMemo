@@ -4,7 +4,7 @@ using System.Linq;
 using System.Windows;
 using MarkdownMemo.ViewModel;
 
-namespace MarkdownMemo
+namespace MarkdownMemo.Common
 {
 
   /// <summary>
