@@ -59,5 +59,51 @@ namespace MarkdownMemo.Properties {
                 resourceCulture = value;
             }
         }
+        
+        /// <summary>
+        ///   @charset &quot;UTF-8&quot;;
+        ///
+        ///html {
+        ///   overflow-y:scroll;
+        ///}
+        ///
+        ///body {
+        ///   margin:0;
+        ///   padding:0;
+        ///   line-height:1.6;
+        ///   letter-spacing:1px;
+        ///   font-family:Verdana, Helvetica, sans-serif;
+        ///   font-size:12px;
+        ///   color:#333;
+        ///   background:#fff;
+        ///}
+        ///
+        ///img {
+        ///   border:0;
+        ///   vertical-align:bottom;
+        ///}
+        ///
+        ///h1 {
+        ///   margin:0;
+        ///   padding:10px;
+        ///   font-size:24px;
+        ///}
+        ///
+        ///h2 {
+        ///   margin-bottom:5px;
+        ///   padding:5px 0;
+        ///   font-size:16px;
+        ///   border-bottom:3px double #ccc;
+        ///}
+        ///
+        ///h3 {
+        ///   margin-bottom:5px;
+        ///   padding [残りの文字列は切り詰められました]&quot;; に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        internal static string style {
+            get {
+                return ResourceManager.GetString("style", resourceCulture);
+            }
+        }
     }
 }

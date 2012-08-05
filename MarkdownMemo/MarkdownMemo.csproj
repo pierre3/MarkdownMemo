@@ -38,10 +38,6 @@
     <DocumentationFile>bin\Release\MarkdownMemo.XML</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="MarkdownSharp, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>lib\MarkdownSharp.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Data" />
@@ -63,33 +59,12 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Common\DelegateCommand.cs" />
-    <Compile Include="Common\PathHelper.cs" />
-    <Compile Include="ViewModel\Messages\RequestPreviewMessage.cs" />
-    <Compile Include="View\Actions\OpenFileDialogAction.cs" />
-    <Compile Include="ViewModel\Messages\OpenFileDialogMessage.cs" />
-    <Compile Include="View\Actions\SaveFileDialogAction.cs" />
-    <Compile Include="ViewModel\Messages\SaveFileDialogMessage.cs" />
-    <Compile Include="View\Actions\DialogBoxAction.cs" />
-    <Compile Include="View\TextBoxHelper.cs" />
-    <Compile Include="ViewModel\IFileOpener.cs" />
-    <Compile Include="ViewModel\ITerminatable.cs" />
-    <Compile Include="Model\LinkItem.cs" />
-    <Compile Include="Model\LinkItemCollection.cs" />
-    <Compile Include="Model\MarkdownText.cs" />
-    <Compile Include="Common\TextIOHelper.cs" />
-    <Compile Include="Common\XEnumerable.cs" />
-    <Compile Include="Model\XhtmlDocument.cs" />
-    <Compile Include="ViewModel\MainWindowViewModel.cs" />
-    <Compile Include="ViewModel\ViewModelBase.cs" />
-    <Compile Include="ViewModel\Messages\DialogBoxMessage.cs" />
-    <Compile Include="Common\Messenger\IViewAction.cs" />
-    <Compile Include="View\Actions\PreviewAction.cs" />
-    <Compile Include="Common\Messenger\ActionCollection.cs" />
-    <Compile Include="Common\Messenger\Messenger.cs" />
-    <Compile Include="Common\Messenger\MessengerBehavior.cs" />
-    <Compile Include="View\WindowView.cs" />
-    <Page Include="View\MainWindow.xaml">
+    <Compile Include="Actions\OpenFileDialogAction.cs" />
+    <Compile Include="Actions\SaveFileDialogAction.cs" />
+    <Compile Include="Actions\DialogBoxAction.cs" />
+    <Compile Include="TextBoxHelper.cs" />
+    <Compile Include="Actions\PreviewAction.cs" />
+    <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -97,7 +72,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="View\MainWindow.xaml.cs">
+    <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
@@ -130,10 +105,22 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="lib\MarkdownSharp.dll" />
-    <Content Include="style.css" />
+    <None Include="Resources\style.css" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\My.Common\My.Common.csproj">
+      <Project>{FED0C759-F1B5-4945-9BBB-2D2D821E8C4B}</Project>
+      <Name>My.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MarkdownMemo.ViewModel\MarkdownMemo.ViewModel.csproj">
+      <Project>{4E416AB4-64DF-4380-A2D6-F9C6D1420D5E}</Project>
+      <Name>MarkdownMemo.ViewModel</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\My.Mvvm\My.Mvvm.csproj">
+      <Project>{CB8F5BA9-28AE-4584-8320-040677A1570E}</Project>
+      <Name>My.Mvvm</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
