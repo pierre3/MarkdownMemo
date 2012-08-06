@@ -30,32 +30,10 @@ namespace MarkdownMemo
       System.IO.Directory.CreateDirectory(System.IO.Path.Combine(userDir, "image"));
       var previewPath = System.IO.Path.Combine(userDir, processId + "_Preview.html");
 
-      //HTMLプレビュー更新のトリガイベント
-      var updateTrigger = Observable.FromEvent<TextChangedEventHandler, TextChangedEventArgs>(
-        h => (sender, args) => h(args),
-        h => mainWindow.textBox1.TextChanged += h,
-        h => mainWindow.textBox1.TextChanged -= h).Throttle(TimeSpan.FromMilliseconds(500));
-
-      //HTMLプレビュー更新依頼 コールバック
-      Action<string> requestPreview = path =>
-        this.Dispatcher.BeginInvoke(new Action(() =>
-          mainWindow.prevewBrowser.Navigate(new Uri(path))));
-
       //ViewModelインスタンス生成
-      var viewModel = new MainwindowViewModel(previewPath, "style.css",
-        updateTrigger, requestPreview, e.Args.FirstOrDefault());
-
-      //ウインドウ終了依頼　コールバック
-      EventHandler handler = null;
-      handler = (_, __) =>
-      {
-        viewModel.RequestClose -= handler;
-        mainWindow.Close();
-      };
-      viewModel.RequestClose += handler;
+      var viewModel = new MainwindowViewModel(previewPath, "style.css", e.Args.FirstOrDefault());
 
       mainWindow.DataContext = viewModel;
-      //Messenger.Default.Register<DialogMessage>(viewModel, MarkdownMemo.MainWindow.ShowMessageBox);
       mainWindow.Show();
     }
   }

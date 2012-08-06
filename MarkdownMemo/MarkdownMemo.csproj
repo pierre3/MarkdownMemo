@@ -62,6 +62,7 @@
     <Compile Include="Actions\OpenFileDialogAction.cs" />
     <Compile Include="Actions\SaveFileDialogAction.cs" />
     <Compile Include="Actions\DialogBoxAction.cs" />
+    <Compile Include="Actions\CloseAction.cs" />
     <Compile Include="TextBoxHelper.cs" />
     <Compile Include="Actions\PreviewAction.cs" />
     <Page Include="MainWindow.xaml">

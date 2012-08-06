@@ -21,6 +21,7 @@
             <c:OpenFileDialogAction/>
             <c:SaveFileDialogAction/>
             <c:PreviewAction/>
+            <c:CloseAction/>
         </mvvm:ActionCollection>
     </mvvm:MessengerBehavior.Actions>
     

@@ -6,6 +6,9 @@ using System.Windows;
 using System.Windows.Input;
 using MarkdownMemo.Model;
 using My.Mvvm;
+using System.Reactive;
+using System.Reactive.Subjects;
+using System.Reactive.Linq;
 
 namespace MarkdownMemo.ViewModel
 {
@@ -34,6 +37,8 @@ namespace MarkdownMemo.ViewModel
     private LinkItemCollection _linkItems;
     private LinkItem _selectedLinkItem;
     private int? _caretIndex;
+    private Subject<string> _subject;
+    private IDisposable _updatePreviewTrigger;
     #endregion
 
     #region Properties
@@ -44,6 +49,7 @@ namespace MarkdownMemo.ViewModel
       set
       {
         _markdownText.Text = value;
+        _subject.OnNext(value);
         //OnPropertyChanged("Text") はMarkdown.Textプロパティで呼ばれる
         SetTitle();
       }
@@ -168,7 +174,7 @@ namespace MarkdownMemo.ViewModel
       get
       {
         if (_exit == null)
-          _exit = new DelegateCommand(_ => OnRequestClose());
+          _exit = new DelegateCommand(_ => this.RequestClose());
         return _exit;
       }
     }
@@ -238,17 +244,6 @@ namespace MarkdownMemo.ViewModel
 
     #endregion
 
-    #region Events
-    /// <summary>Viewの終了要求</summary>
-    public EventHandler RequestClose;
-    private void OnRequestClose()
-    {
-      var handler = RequestClose;
-      if (handler != null)
-        handler(this, new EventArgs());
-    }
-    #endregion
-
     #region Constructor
     /// <summary>
     /// コンストラクタ
@@ -259,29 +254,32 @@ namespace MarkdownMemo.ViewModel
     /// <param name="cssName">
     /// CSSファイル名をHTMLプレビューファイル保存先からの相対パスで指定します
     /// </param>
-    /// <param name="requestPreview">Viewによるプレビュー表示の更新を記述するデリゲート</param>
     /// <param name="startupFile">起動時に読み込むファイルの名前</param>
-    /// <param name="updatePreviewTrigger">プレビュー表示の更新のトリガとなるイベントのIObservable</param>
-    public MainwindowViewModel(string previewPath, string cssName,
-      IObservable<EventArgs> updatePreviewTrigger, Action<string> requestPreview, string startupFile)
+    public MainwindowViewModel(string previewPath, string cssName,string startupFile)
     {
+  
       this.Messenger = new Messenger();
       this.CaretIndex = 0;
-      this._linkItemsFileName = Path.Combine(
-        Path.GetDirectoryName(previewPath), "LinkItems.xml");
+      this._linkItemsFileName 
+        = Path.Combine(Path.GetDirectoryName(previewPath), "LinkItems.xml");
       LinkItems = LinkItemCollection.FromXml(_linkItemsFileName);
 
       _markdownText = new MarkdownText(previewPath, cssName);
       _markdownText.TextChanged += () => OnPropertyChanged("Text");
 
-      updatePreviewTrigger.Subscribe(_ =>
+      _subject = new Subject<string>();
+      var connectable = _subject.Throttle(TimeSpan.FromMilliseconds(500)).Publish();
+      connectable.Subscribe(_=>
         {
           _markdownText.SavePreviewHtml(
             LinkItems.Select(item => string.Format("[{0}]: {1}", item.ID, item.Path)));
+          
           var message = new RequestPreviewMessage(new Uri(_markdownText.PreviewPath));
           this.Messenger.Send(this, message);
-          //requestPreview(_markdownText.PreviewPath);
+          
         }, e => Trace.TraceError("{0},[StackTrace: {1}]", e.Message, e.StackTrace));
+      _updatePreviewTrigger = connectable.Connect();
+
 
       if (File.Exists(startupFile))
       {
@@ -481,6 +479,10 @@ namespace MarkdownMemo.ViewModel
       LinkItems.Remove(SelectedLinkItem);
     }
 
+    private void RequestClose()
+    {
+      Messenger.Send(this, new RequestCloseMessage());
+    }
     #endregion
 
     #region Expricit Interface Implementation
@@ -500,6 +502,7 @@ namespace MarkdownMemo.ViewModel
     /// </summary>
     void ITerminatable.Terminate()
     {
+      _updatePreviewTrigger.Dispose();
       if (!ConfirmSaveFile())
       { return; }
       this.LinkItems.ToXml(_linkItemsFileName);

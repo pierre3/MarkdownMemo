@@ -50,6 +50,7 @@
     <Compile Include="Messages\OpenFileDialogMessage.cs" />
     <Compile Include="Messages\RequestPreviewMessage.cs" />
     <Compile Include="Messages\SaveFileDialogMessage.cs" />
+    <Compile Include="Messages\RequestCloseMessage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
