@@ -8,22 +8,21 @@ namespace MarkdownMemo
   /// </summary>
   public class TextBoxHelper
   {
-
     /// <summary>
     /// キャレット位置を表す依存関係プロパティ
     /// </summary>
     public static readonly DependencyProperty CaretPositionProperty
-      = DependencyProperty.RegisterAttached("CaretPosition", typeof(int?), typeof(TextBoxHelper),
-      new FrameworkPropertyMetadata(null, CaretPositionChanged));
+      = DependencyProperty.RegisterAttached("CaretPosition", typeof(int), typeof(TextBoxHelper),
+      new FrameworkPropertyMetadata(-1, CaretPositionChanged));
 
     /// <summary>
     /// キャレット位置プロパティGetter
     /// </summary>
     /// <param name="obj">依存関係オブジェクト</param>
     /// <returns>キャレット位置</returns>
-    public static int? GetCaretPosition(DependencyObject obj)
+    public static int GetCaretPosition(DependencyObject obj)
     {
-      return (int?)obj.GetValue(CaretPositionProperty);
+      return (int)obj.GetValue(CaretPositionProperty);
     }
 
     /// <summary>
@@ -31,7 +30,7 @@ namespace MarkdownMemo
     /// </summary>
     /// <param name="obj">依存関係オブジェクト</param>
     /// <param name="value">キャレット位置</param>
-    public static void SetCaretPosition(DependencyObject obj, int? value)
+    public static void SetCaretPosition(DependencyObject obj, int value)
     {
       obj.SetValue(CaretPositionProperty, value);
     }
@@ -47,20 +46,20 @@ namespace MarkdownMemo
       if (textBox == null)
       { return; }
 
-      var oldValue = e.OldValue as int?;
-      var newValue = e.NewValue as int?;
-      if (oldValue == null && newValue != null)
+      var oldValue = (int)e.OldValue;
+      var newValue = (int)e.NewValue;
+      if (oldValue<0  && newValue >= 0)
       {
         textBox.SelectionChanged += textBox_selectionChanged;
       }
-      else if (oldValue != null && newValue == null)
+      else if (oldValue >= 0 && newValue < 0)
       {
         textBox.SelectionChanged -= textBox_selectionChanged;
       }
 
-      if ((int)e.NewValue != textBox.CaretIndex)
+      if (newValue != textBox.CaretIndex)
       {
-        textBox.CaretIndex = (int)e.NewValue;
+        textBox.CaretIndex = newValue;
       }
 
     }

@@ -14,7 +14,13 @@ namespace My.Mvvm
   {
     #region Fields
     private List<MessageParameter> _parmeterList = new List<MessageParameter>();
+    private static readonly Messenger m_default = new Messenger();
     #endregion
+
+    /// <summary>
+    /// 既定のメッセンジャー
+    /// </summary>
+    public static Messenger Default { get { return m_default; } }
 
     #region Methods
     /// <summary>
@@ -42,7 +48,7 @@ namespace My.Mvvm
     /// <param name="message">メッセージオブジェクト</param>
     public void Send<TMessage>(ViewModelBase sender, TMessage message)
     {
-      var actions = _parmeterList.Where(o => o.Sender == sender && o.MessageType == typeof(TMessage))
+      var actions = _parmeterList.Where(o => /*o.Sender == sender &&*/ o.MessageType == typeof(TMessage))
         .Select(o => o.Action as Action<TMessage>);
       foreach (var act in actions)
       {

@@ -11,7 +11,7 @@ namespace My.Mvvm
     /// プロパティ変更通知イベント
     /// </summary>
     public event PropertyChangedEventHandler PropertyChanged;
-    
+
     /// <summary>
     /// プロパティ変更通知イベント発生
     /// </summary>
@@ -24,6 +24,6 @@ namespace My.Mvvm
         handler(this, new PropertyChangedEventArgs(name));
       }
     }
-   
+
   }
 }

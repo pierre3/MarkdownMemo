@@ -9,7 +9,7 @@ namespace MarkdownMemo
   /// <summary>
   /// MainWindow.xaml の相互作用ロジック
   /// </summary>
-  public partial class MainWindow : WindowView
+  public partial class MainWindow : FileEditorWindowView
   {
     /// <summary>
     /// コンストラクタ
@@ -18,7 +18,6 @@ namespace MarkdownMemo
     {
       InitializeComponent();
     }
-
 
     /// <summary>
     /// テキストボックスにファイルをドラッグした際の処理
@@ -51,16 +50,9 @@ namespace MarkdownMemo
       { return; }
 
       var name = fileNames.FirstOrDefault();
-      this.OpenFile(name);
+      this.ReceiveFile(name);
       e.Handled = true;
     }
 
-    /// <summary>
-    /// ウィンドウを閉じる際の処理
-    /// </summary>
-    private void window_Closed(object sender, EventArgs e)
-    {
-      this.TerminateViewModel();
-    }
   }
 }

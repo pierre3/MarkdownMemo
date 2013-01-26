@@ -31,7 +31,7 @@ namespace MarkdownMemo.Model
       {
         this._text = value;
         this.IsTextChanged = true;
-        OnTextChanged();
+        OnTextChanged(value);
       }
     }
 
@@ -66,13 +66,13 @@ namespace MarkdownMemo.Model
     /// <summary>
     /// Textプロパティ変更通知イベント
     /// </summary>
-    public event Action TextChanged;
+    public event Action<string> TextChanged;
     /// <summary>Textプロパティ変更通知イベント発生</summary>
-    protected void OnTextChanged()
+    protected void OnTextChanged(string text)
     {
       var handler = TextChanged;
       if (handler != null)
-        handler();
+        handler(text);
     }
     #endregion
 
@@ -86,11 +86,15 @@ namespace MarkdownMemo.Model
     /// <param name="cssName">
     /// CSSファイル名をHTMLプレビューファイル保存先からの相対パスで指定します
     /// </param>
-    public MarkdownText(string previewPath, string cssName)
+    /// <param name="textChanged">
+    /// TextChangedイベントハンドラ
+    /// </param>
+    public MarkdownText(string previewPath, string cssName, Action<string> textChanged)
     {
       OpenNew();
       this.PreviewPath = previewPath;
       this.CssName = cssName;
+      this.TextChanged += textChanged;
     }
     #endregion
 
@@ -113,7 +117,7 @@ namespace MarkdownMemo.Model
     public void OpenFrom(string fileName)
     {
       if (!File.Exists(fileName))
-        throw new FileNotFoundException();
+      { throw new FileNotFoundException(); }
 
       byte[] bytes;
       using (var stream = new FileStream(fileName, FileMode.Open, FileAccess.Read))

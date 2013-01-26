@@ -25,9 +25,13 @@ namespace MarkdownMemo
     public void Register(FrameworkElement recipient, Messenger messenger)
     {
       this._recipient = recipient as Window;
-      
       if (this._recipient == null)
-      { return; }
+      { 
+        //throw new System.ArgumentException("recipient is not Window class.","recipient"); 
+          return;//デザイン時にNullが渡されてエラーとなるので例外は投げないようにした
+      }
+      if (messenger == null)
+      { throw new System.ArgumentNullException("messenger"); }
 
       messenger.Register<RequestCloseMessage>(recipient, WindowClose);
     }

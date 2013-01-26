@@ -1,36 +1,32 @@
 # MarkdownMemo #
 ### 概要 ###
-* リアルタイムにHTMLプレビュー可能なMarkdownエディタです。
-* Markdown エンジンに
+- HTMLプレビュー機能付Markdownテキストエディタです。
+- Markdown パーサに
 [MarkdownSharp](http://code.google.com/p/markdownsharp/)を使用しています。
-* WPF/C#で開発しています。
-* Windows用デスクトップアプリケーションです。
+- WPF/C#で開発したWindows用デスクトップアプリケーションです。
 
-### Version ###
-* 開発準備版
+#### 機能　###
+Markdownエディタとしての機能も徐々に充実させて行く予定です。  
 
-最低限の動作は可能ですが、とりあえず動く程度のひな型です。  
+##### 実装済みの機能 #####
+- 日本語文字コード自動判別
+- リアルタイムHTMLプレビュー機能
+- CSSファイルの適用(１種類のみ。現状、ユーザによる切り替えは不可)
+- HTML形式での保存
+- 参照画像、リンク要素の登録・保存
 
-### 機能 ###
-#### テキストファイルの編集、保存 ####
-* 日本語文字コードの自動判別   
-  * UTF-8
-  * EUC
-  * S-JIS
-  * JIS
+### 開発 ###
+Ver. 0.1.0.0
 
-#### HTMLリアルタイムプレビュー表示 ####
- * CSSスタイルシートの適用
- * HTML形式での保存
- * 画像ファイルの参照
+#### 開発環境 ####
+- IDE
+ + Microsoft Visual Studio Express 2012 for Windows Desktop
+- Framework 
+ + .Net Framework 4.5  
+ + Windows Presentation Foundation (WPF)
+- Library
+ + [MarkdownSharp](http://code.google.com/p/markdownsharp/) V1.13
+ + [Reactive Extensions for .Net](http://msdn.microsoft.com/en-us/data/gg577609.aspx) v1.0.10621 
 
-### 開発環境 ###
- * IDE
-  * Microsoft Visual C# 2010 Express
- * Framework 
-  * .Net Framework 4.0  
-  * Windows Presentation Foundation (WPF)
- * Library
-  * [MarkdownSharp](http://code.google.com/p/markdownsharp/) V1.13
-  * [Reactive Extensions for .Net](http://msdn.microsoft.com/en-us/data/gg577609.aspx) v1.0.10621 
-
+####　MVVMデザインパターン　####
+このプロジェクトは、MVVMデザインパターンによるWPFアプリケーション開発について、実践、習得することを主な目的としています。

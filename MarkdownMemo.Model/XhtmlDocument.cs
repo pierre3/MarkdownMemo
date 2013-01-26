@@ -24,9 +24,9 @@ namespace MarkdownMemo.Model
       //<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja">
       //  <head>
       //    <meta http-equiv="Content-Type" content="application/xhtml+xml; charset=UTF-8"/>
-      //    <title> $(title) </title>
+      //    <title> ${title} </title>
       //    <link rel="stylesheet" type="text/css" href=${styleSheet}/>
-      //    <body>$(body)</body>
+      //    <body>${body}</body>
       //  </head>
       //</html>
       XElement bodyContents;
