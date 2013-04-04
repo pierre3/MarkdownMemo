@@ -7,6 +7,7 @@ using My.Mvvm;
 using MarkdownMemo.Model;
 using System.Windows.Input;
 using System.IO;
+using System.Net;
 
 namespace MarkdownMemo.ViewModel
 {
@@ -24,6 +25,8 @@ namespace MarkdownMemo.ViewModel
     private string _linkItemsFileName;
     private string _linkName;
     private string _linkPath;
+    private bool _isImage;
+    private bool _uploadesSkydrive;
     private LinkItemCollection _linkItems;
     private LinkItem _selectedLinkItem;
     private string _referenceFileDirectory;
@@ -78,6 +81,28 @@ namespace MarkdownMemo.ViewModel
         _linkPath = value;
         OnPropertyChanged("LinkPath");
       }
+    }
+
+    /// <summary>追加用ファイルが画像の場合にTrue</summary>
+    public bool IsImage
+    {
+      set 
+      { 
+        _isImage = value;
+        OnPropertyChanged("IsImage");
+      }
+      get { return _isImage; }
+    }
+
+    /// <summary>SkyDriveにアップロードする場合にTrue</summary>
+    public bool UploadsSkyDrive
+    {
+      set 
+      {
+        _uploadesSkydrive = value;
+        OnPropertyChanged("UploadsSkyDrive");
+      }
+      get { return _uploadesSkydrive; }
     }
 
     /// <summary>選択中の参照ファイル</summary>
@@ -169,6 +194,8 @@ namespace MarkdownMemo.ViewModel
       this._referenceFileDirectory = referenceFileDirectory;
       this._linkItemsFileName = itemsFileName;
       this._linkItems = LinkItemCollection.FromXml(itemsFileName);
+      this.IsImage = true;
+      this.UploadsSkyDrive = true;
     }
     #endregion
 
@@ -181,13 +208,20 @@ namespace MarkdownMemo.ViewModel
     #endregion
 
     #region Private Methods
+
+
     /// <summary>参照ファイルの追加</summary>
     private void AddLinkItem()
     {
-      string path;
+      if (LinkItems.Any(item => item.ID == LinkName))
+      {
+        Messenger.Default.Send(this, new DialogBoxMessage("既に登録済みの名前では追加できません","参照アイテムの追加"));
+        return;
+      }
+
       if (File.Exists(LinkPath))
       {
-        path = Path.Combine("image", Path.GetFileName(LinkPath));
+        var path = Path.Combine("image", Path.GetFileName(LinkPath));
         var dest = Path.Combine(_referenceFileDirectory, path);
         try
         {
@@ -199,12 +233,8 @@ namespace MarkdownMemo.ViewModel
           return;
         }
       }
-      else
-      {
-        path = LinkPath;
-      }
-      LinkItems.Add(new LinkItem(LinkName, path.Replace('\\', '/')));
 
+      LinkItems.Add(new LinkItem(LinkName, LinkPath.Replace('\\', '/'), IsImage));
       LinkName = string.Empty;
       LinkPath = string.Empty;
     }
@@ -214,8 +244,7 @@ namespace MarkdownMemo.ViewModel
     private bool CanAddLinkItem()
     {
       return !string.IsNullOrEmpty(LinkPath)
-        && !string.IsNullOrEmpty(LinkName)
-        && !LinkItems.Any(item => item.ID == LinkName);
+        && !string.IsNullOrEmpty(LinkName);
     }
 
     /// <summary>参照ファイルを開く</summary>
@@ -253,15 +282,14 @@ namespace MarkdownMemo.ViewModel
       if (SelectedLinkItem == null)
       { return; }
 
-      var path = Path.Combine(_referenceFileDirectory, SelectedLinkItem.Path);
       var substring = default(string);
-      if (File.Exists(path))
+      if (SelectedLinkItem.IsImage)
       {
-        substring = string.Format("![Alt?][{0}]", SelectedLinkItem.ID);
+        substring = string.Format("![{0}][{0}]", SelectedLinkItem.ID);
       }
       else
       {
-        substring = string.Format("[Link Text?][{0}]", SelectedLinkItem.ID);
+        substring = string.Format("[{0}][{0}]", SelectedLinkItem.ID);
       }
       OnInsertItem(substring);
     }

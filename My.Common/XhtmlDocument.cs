@@ -1,6 +1,6 @@
 ﻿using System.Xml.Linq;
 
-namespace MarkdownMemo.Model
+namespace My.Common
 {
   /// <summary>
   /// XHTMLドキュメントを表します
@@ -26,8 +26,9 @@ namespace MarkdownMemo.Model
       //    <meta http-equiv="Content-Type" content="application/xhtml+xml; charset=UTF-8"/>
       //    <title> ${title} </title>
       //    <link rel="stylesheet" type="text/css" href=${styleSheet}/>
-      //    <body>${body}</body>
+      //    
       //  </head>
+      //  <body>${body}</body>
       //</html>
       XElement bodyContents;
       try
@@ -52,8 +53,8 @@ namespace MarkdownMemo.Model
               new XElement(Xmlns + "link",
                 new XAttribute("rel", "stylesheet"),
                 new XAttribute("type", "text/css"),
-                new XAttribute("href", styleSheet)),
-            bodyContents)));
+                new XAttribute("href", styleSheet))),
+            bodyContents));
     }
 
   }

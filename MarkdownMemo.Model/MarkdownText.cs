@@ -1,12 +1,12 @@
-﻿using System;
+﻿using MarkdownSharp;
+using My.Common;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Xml;
 using System.Xml.Linq;
-using My.Common;
-using MarkdownSharp;
 
 namespace MarkdownMemo.Model
 {
@@ -18,6 +18,12 @@ namespace MarkdownMemo.Model
     #region Fields
     /// <summary>プロパティのバッキングストア</summary>
     private string _text;
+
+    /// <summary>現在編集中の位置を表すマーカ</summary>
+    public static string EditingPositionMarker = "<a id=\"mdmemo-editing\" />";
+    
+    /// <summary>編集中のHTML要素に設定するID</summary>
+    public static string EditingTagId = "mdmemo-editing";
     #endregion
 
     #region Properties
@@ -204,16 +210,54 @@ namespace MarkdownMemo.Model
     /// <param name="title">HTMLタイトル</param>
     /// <param name="cssName">CSSファイル名</param>
     /// <param name="referenceItems">参照ファイル登録用文字列のシーケンス</param>
+    /// <param name="caretPosition">現在の編集位置。<remarks>
+    /// 1以上の値を指定すると、その位置に現在の編集位置を示すマーカを埋め込みます。
+    /// </remarks></param>
     /// <returns>XHTMLドキュメント</returns>
-    public XhtmlDocument ToXhtml(string title, string cssName, IEnumerable<string> referenceItems)
+    public XhtmlDocument ToXhtml(string title, string cssName, IEnumerable<string> referenceItems, int caretPosition)
     {
+      var text = this.Text;
+      //編集中を示すマーカの挿入
+      if(caretPosition > 0)
+      {
+        if (caretPosition > this.Text.Length)
+        { 
+          caretPosition = this.Text.Length; 
+        }
+        text = this.Text.Insert(caretPosition, EditingPositionMarker + Environment.NewLine);
+      }
+
+      //参照ファイル登録用テキストの追加
       var refText = string.Empty;
       if (referenceItems != null && referenceItems.Count() > 0)
       {
         refText = referenceItems.Aggregate((a, b) => a + Environment.NewLine + b);
       }
-      var mdString = new Markdown().Transform(this.Text + Environment.NewLine + refText);
+      text += Environment.NewLine + refText;
+      
+      //Htmlに変換
+      var mdString = new Markdown().Transform(text);
       return new XhtmlDocument(title, cssName, mdString);
+    }
+
+    /// <summary>
+    /// アップロード用文字列
+    /// </summary>
+    /// <param name="referenceItems">参照ファイル登録用文字列のシーケンス</param>
+    /// <returns>アップロード用文字列</returns>
+    public string ToUploadString(IEnumerable<string> referenceItems)
+    {
+      var sb = new StringBuilder();
+      if(!string.IsNullOrEmpty(this.CssName))
+      {
+        sb.AppendFormat(@"<link rel=""stylesheet"" type=""text/css"" href=""{0}""/>" + Environment.NewLine, CssName);
+      }
+      sb.AppendLine(this.Text);
+      foreach (var item in referenceItems)
+      {
+        sb.AppendLine(item);
+      }
+      return sb.ToString();
     }
 
     /// <summary>
@@ -228,7 +272,7 @@ namespace MarkdownMemo.Model
       var destDir = Path.ChangeExtension(fileName, ".files");
       var relativeDir = destDir.Replace(Path.GetDirectoryName(fileName), ".");
     
-      var doc = this.ToXhtml(title, this.CssName, referenceItems);
+      var doc = this.ToXhtml(title, this.CssName, referenceItems, -1 );
       var elements = doc.Descendants();
       var query = elements.WithAttribute(XhtmlDocument.Xmlns + "link", "href", (e, a) => new { Elem = e, Attr = a })
         .Concat(elements.WithAttribute(XhtmlDocument.Xmlns + "img", "src", (e, a) => new { Elem = e, Attr = a }))
@@ -259,9 +303,34 @@ namespace MarkdownMemo.Model
     /// <summary>
     ///編集中のMarkdownテキストをHTMLプレビューファイルに変換し保存します
     /// </summary>
-    public void SavePreviewHtml(IEnumerable<string> referenceItems)
+    /// <param name="caretPosition">カレット位置</param>
+    /// <param name="referenceItems">参照アイテムのコレクション</param>
+    public void SavePreviewHtml(IEnumerable<string> referenceItems, int caretPosition)
     {
-      var doc = this.ToXhtml("Markdown Memo Preview", this.CssName, referenceItems);
+      var doc = this.ToXhtml("Markdown Memo Preview", this.CssName, referenceItems, caretPosition);
+      var element = doc.Descendants()
+        .Where(elem => !elem.HasElements)
+        .Where(elem =>  elem.Attribute("id") !=null  )
+        .FirstOrDefault();
+
+      if (element != default(XElement))
+      {
+        element.Parent.SetAttributeValue("id", "mdmemo-editing");
+        element.Remove();
+      }
+      else 
+      {
+        var pre = doc.Descendants()
+          .Where(elem => !elem.HasElements)
+          .Where(elem => elem.Name.LocalName == "pre" || elem.Name.LocalName == "code")
+          .Where(elem => elem.Value.Contains(EditingPositionMarker)).FirstOrDefault();
+        if (pre != default(XElement))
+        {
+          pre.SetAttributeValue("id", EditingTagId);
+          pre.Value = pre.Value.Replace(EditingPositionMarker, "");
+        }
+      }
+
       var settings = new XmlWriterSettings();
       settings.Indent = true;
       settings.IndentChars = "";

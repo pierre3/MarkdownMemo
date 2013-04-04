@@ -17,6 +17,7 @@ namespace MarkdownMemo
     public MainWindow()
     {
       InitializeComponent();
+
     }
 
     /// <summary>
@@ -52,6 +53,16 @@ namespace MarkdownMemo
       var name = fileNames.FirstOrDefault();
       this.ReceiveFile(name);
       e.Handled = true;
+    }
+
+    private void prevewBrowser_LoadCompleted_1(object sender, System.Windows.Navigation.NavigationEventArgs e)
+    {
+      var html = prevewBrowser.Document as mshtml.HTMLDocument;
+      var element = html.getElementById("mdmemo-editing");
+      if (element != null)
+      { 
+        element.scrollIntoView(false);
+      }
     }
 
   }

@@ -15,6 +15,7 @@ namespace My.Mvvm
     public IFileCommands FileCommands { 
       get { return this.DataContext as IFileCommands; } 
     }
+
     /// <summary>
     /// Newコマンドのハンドラ
     /// </summary>
@@ -113,10 +114,10 @@ namespace My.Mvvm
     /// </remarks>
     public virtual void ReceiveFile(string fileName)
     {
-      var fileEditor = this.DataContext as IFileCommands;
-      if (fileEditor == null)
-      { return; }
-      fileEditor.Receive(fileName);
+      if (FileCommands != null)
+      {
+        FileCommands.Receive(fileName);
+      }
     }
 
     /// <summary>

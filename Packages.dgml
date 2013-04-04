@@ -1,11 +1,30 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <DirectedGraph GraphDirection="LeftToRight" xmlns="http://schemas.microsoft.com/vs/2009/dgml">
   <Nodes>
+    <Node Id="GistSharp" Label="GistSharp" Category="プロジェクト" />
+    <Node Id="DynamicJson 1.2.0.0" Label="DynamicJson 1.2.0.0" Category="パッケージ" />
+    <Node Id="LiveSDK 5.3" Label="LiveSDK 5.3" Category="パッケージ" />
+    <Node Id="My.Mvvm" Label="My.Mvvm" Category="プロジェクト" />
+    <Node Id="LiveSDK 5.3" Label="LiveSDK 5.3" Category="パッケージ" />
+    <Node Id="MarkdownMemo.ViewModel" Label="MarkdownMemo.ViewModel" Category="プロジェクト" />
+    <Node Id="LiveSDK 5.3" Label="LiveSDK 5.3" Category="パッケージ" />
+    <Node Id="My.Common" Label="My.Common" Category="プロジェクト" />
+    <Node Id="LiveSDK 5.3" Label="LiveSDK 5.3" Category="パッケージ" />
     <Node Id="MarkdownMemo.Model" Label="MarkdownMemo.Model" Category="プロジェクト" />
+    <Node Id="LiveSDK 5.3" Label="LiveSDK 5.3" Category="パッケージ" />
     <Node Id="MarkdownSharp 1.13.0.0" Label="MarkdownSharp 1.13.0.0" Category="パッケージ" />
+    <Node Id="MarkdownMemo" Label="MarkdownMemo" Category="プロジェクト" />
+    <Node Id="LiveSDK 5.3" Label="LiveSDK 5.3" Category="パッケージ" />
   </Nodes>
   <Links>
+    <Link Source="GistSharp" Target="DynamicJson 1.2.0.0" Category="インストール済みのパッケージ" />
+    <Link Source="GistSharp" Target="LiveSDK 5.3" Category="インストール済みのパッケージ" />
+    <Link Source="My.Mvvm" Target="LiveSDK 5.3" Category="インストール済みのパッケージ" />
+    <Link Source="MarkdownMemo.ViewModel" Target="LiveSDK 5.3" Category="インストール済みのパッケージ" />
+    <Link Source="My.Common" Target="LiveSDK 5.3" Category="インストール済みのパッケージ" />
+    <Link Source="MarkdownMemo.Model" Target="LiveSDK 5.3" Category="インストール済みのパッケージ" />
     <Link Source="MarkdownMemo.Model" Target="MarkdownSharp 1.13.0.0" Category="インストール済みのパッケージ" />
+    <Link Source="MarkdownMemo" Target="LiveSDK 5.3" Category="インストール済みのパッケージ" />
   </Links>
   <Categories>
     <Category Id="プロジェクト" />

@@ -7,7 +7,7 @@
         Title="{Binding Path=Title}" 
         Height="768" 
         Width="900">
-    
+
     <mvvm:FileEditorWindowView.DataContext>
         <vm:MainwindowViewModel/>
     </mvvm:FileEditorWindowView.DataContext>
@@ -19,14 +19,14 @@
         <CommandBinding Command="Open"
                         Executed="FileOpenExecuted"
                         CanExecute="FileOpenCanExecute"/>
-       <CommandBinding Command="Save"
+        <CommandBinding Command="Save"
                         Executed="FileSaveExecuted"
                        CanExecute="FileSaveCanExecute"/>
-       <CommandBinding Command="SaveAs"
+        <CommandBinding Command="SaveAs"
                         Executed="FileSaveAsExecuted"
                        CanExecute="FileSaveAsCanExecute"/>
     </Window.CommandBindings>
-   
+
     <mvvm:MessengerBehavior.Actions>
         <mvvm:ActionCollection SourceObject="{x:Static mvvm:Messenger.Default}">
             <c:DialogBoxAction/>
@@ -36,7 +36,7 @@
             <c:CloseAction/>
         </mvvm:ActionCollection>
     </mvvm:MessengerBehavior.Actions>
-    
+
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -71,6 +71,9 @@
                           Command="{Binding Path=ExitCommand}"
                           InputGestureText="Alt+F4" />
             </MenuItem>
+            <MenuItem Header="ツール(_T)">
+                <MenuItem Header="Gists..."/>
+            </MenuItem>
         </Menu>
 
         <GridSplitter Name="GridSplitter1"
@@ -104,53 +107,75 @@
             <TabItem Header="Preview">
                 <WebBrowser Name="prevewBrowser"
                             Focusable="False"
-                            Margin="5,5,5,5"/>
+                            Margin="5,5,5,5" 
+                            LoadCompleted="prevewBrowser_LoadCompleted_1" />
             </TabItem>
 
             <TabItem Header="Reference">
-                <Canvas>
-                    <Label Canvas.Top="8"
-                           Canvas.Left="10"
-                           FontWeight="Bold">添付ファイル</Label>
+                <Grid Margin="16">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+
+                    <Label FontWeight="Bold">参照アイテム</Label>
                     <ListBox x:Name="LinkListBox" 
-                             Canvas.Top="32"
-                             Canvas.Left="10"
-                             Width="256"
-                             Height="256"
+                             Grid.Row="1" Grid.ColumnSpan="2"
+                             Height="240"
                              ItemsSource="{Binding Path=LinkItemViewModel.LinkItems}"
                              IsSynchronizedWithCurrentItem="True"
                              SelectedItem="{Binding Path=LinkItemViewModel.SelectedLinkItem}">
                     </ListBox>
-                    <Button Canvas.Top="32"
-                            Canvas.Left="272" 
-                            Width="102"
-                            Command="{Binding Path=LinkItemViewModel.AddLinkCommand}">追加</Button>
-                    <Button Canvas.Top="58"
-                            Canvas.Left="272" 
-                            Width="102"
+
+                    <Grid Grid.Row="2">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+
+                        <Button Grid.ColumnSpan="2" Margin="16,6,16,32" Padding="4"
+                            Command="{Binding Path=LinkItemViewModel.InsertLinkCommand}">エディタに貼り付け</Button>
+                        <Button Grid.Column="2" Margin="2,6,2,32" Padding="4"
                             Command="{Binding Path=LinkItemViewModel.DeleteLinkCommand}">削除</Button>
-                    <Button Canvas.Top="98"
-                            Canvas.Left="272" 
-                            Width="102"
-                            Command="{Binding Path=LinkItemViewModel.InsertLinkCommand}">テキストに貼り付け
-                    </Button>
-                    <Label Canvas.Top="299"
-                           Canvas.Left="10">場所:</Label>
-                    <TextBox Canvas.Top="300"
-                             Canvas.Left="53"
-                             Width="295"
-                             Text="{Binding Path=LinkItemViewModel.LinkPath, UpdateSourceTrigger=PropertyChanged}"/>
-                    <Button Canvas.Top="299"
-                            Canvas.Left="354" 
-                            Width="20"
-                            Command="{Binding Path=LinkItemViewModel.OpenLinkCommand}">...</Button>
-                    <Label Canvas.Top="326"
-                           Canvas.Left="10">名前:</Label>
-                    <TextBox Canvas.Top="328"
-                             Canvas.Left="53"
-                             Width="295"
+
+                        <StackPanel Grid.Row="2" Grid.ColumnSpan="3"
+                                    Orientation="Horizontal">
+                            <Label Margin="2" Padding="4">場所:</Label>
+                            <TextBox Margin="2" Padding="4"
+                                Text="{Binding Path=LinkItemViewModel.LinkPath, UpdateSourceTrigger=PropertyChanged}" Width="240"/>
+                            <Button Margin="2" Padding="4"
+                                Command="{Binding Path=LinkItemViewModel.OpenLinkCommand}">...</Button>
+                        </StackPanel>
+                        <StackPanel Grid.Row="3" Grid.ColumnSpan="3" 
+                                    Orientation="Horizontal">
+                            <Label Margin="2" Padding="4">名前:</Label>
+                            <TextBox Margin="2" Padding="4" Width="240"
                              Text="{Binding Path=LinkItemViewModel.LinkName, UpdateSourceTrigger=PropertyChanged}"/>
-                </Canvas>
+                        </StackPanel>
+                        <StackPanel Grid.Row="4" Grid.ColumnSpan="2">
+                            <RadioButton x:Name="isImageRadioButton"
+                                 Margin="44,6,6,6" GroupName="ReferenceKind" 
+                                 IsChecked="{Binding Path=LinkItemViewModel.IsImage, Mode=TwoWay}">画像ファイル</RadioButton>
+                            <RadioButton Margin="44,6,6,6" GroupName="ReferenceKind">リンクURI</RadioButton>
+                        </StackPanel>
+
+                        <Button Grid.Row="4" Grid.Column="2" VerticalAlignment="Top" Padding="4" Margin="2,16" 
+                            Command="{Binding Path=LinkItemViewModel.AddLinkCommand}">追加</Button>
+                    </Grid>
+                </Grid>
             </TabItem>
         </TabControl>
     </Grid>

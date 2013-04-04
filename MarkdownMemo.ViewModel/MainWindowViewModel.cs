@@ -17,7 +17,7 @@ namespace MarkdownMemo.ViewModel
   /// メイン画面用ViewModelクラス
   /// </summary>
   public class MainwindowViewModel : ViewModelBase,
-    IFileCommands, ITerminatable,IDisposable
+    IFileCommands, ITerminatable, IDisposable
   {
     #region Fields
     private string _title;
@@ -93,6 +93,7 @@ namespace MarkdownMemo.ViewModel
         return _saveHtml;
       }
     }
+        
     #endregion
     #endregion
 
@@ -103,32 +104,45 @@ namespace MarkdownMemo.ViewModel
     public MainwindowViewModel()
     {
       this.CaretIndex = 0;
-            
+      
+
       var userDir = PathHelper.CreateAppDataDirectory();
+      
+      var cssName = "DefaultStyle.css";
+      var cssPath = Path.Combine(userDir,cssName);
+      if(!File.Exists(cssPath))
+      {
+        using (var writer = File.CreateText(cssPath))
+        {
+          writer.Write(Properties.Resources.DefaultStyle);
+        }
+      }
+
       System.IO.Directory.CreateDirectory(System.IO.Path.Combine(userDir, "image"));
       
       this._linkItemViewModel = new LinkItemViewModel(userDir, Path.Combine(userDir, "LinkItems.xml"));
-      this._linkItemViewModel.InsertItem += s => {
+      this._linkItemViewModel.InsertItem += s =>
+      {
         this.Text = this.Text.Insert(CaretIndex < 0 ? 0 : CaretIndex, s);
       };
-      
+
       var processId = System.Diagnostics.Process.GetCurrentProcess().Id.ToString();
       var previewPath = System.IO.Path.Combine(userDir, processId + "_Preview.html");
-      _markdownText = new MarkdownText(previewPath, "Markdown.css", 
+      _markdownText = new MarkdownText(previewPath, cssName,
         text =>
-      {
-        //ModelのTextプロパティ変更イベントのハンドラ
-        OnPropertyChanged("Text");　//ViewModelのPropertyChanged()を呼ぶ 
-        _subject.OnNext(text);      //HtmlPreviewイベントの発火
-        SetTitle();                 //タイトルの編集マーク＊設定←→解除
-      });
+        {
+          //ModelのTextプロパティ変更イベントのハンドラ
+          OnPropertyChanged("Text");　//ViewModelのPropertyChanged()を呼ぶ
+          _subject.OnNext(text);      //HtmlPreviewイベントの発火
+          SetTitle();
+        });
 
 
       _subject = new Subject<string>();
       var connectable = _subject.Throttle(TimeSpan.FromMilliseconds(500)).Publish();
       connectable.Subscribe(_ =>
         {
-          _markdownText.SavePreviewHtml(_linkItemViewModel.ReferenceStringsForPreview);
+          _markdownText.SavePreviewHtml(_linkItemViewModel.ReferenceStringsForPreview, CaretIndex);
           var message = new RequestPreviewMessage(new Uri(_markdownText.PreviewPath));
           Messenger.Default.Send(this, message);
 
@@ -239,7 +253,7 @@ namespace MarkdownMemo.ViewModel
       File.Delete(_markdownText.PreviewPath);
     }
     #endregion
-    
+
     #region private methods
     #region Command Handlers
     /// <summary>HTML形式で保存</summary>
@@ -262,6 +276,8 @@ namespace MarkdownMemo.ViewModel
     {
       Messenger.Default.Send(this, new RequestCloseMessage());
     }
+
+   
     #endregion
 
     /// <summary>

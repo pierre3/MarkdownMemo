@@ -13,6 +13,7 @@ namespace MarkdownMemo.Model
     #region Fields
     private string _id;
     private string _path;
+    private bool _isImage;
     #endregion
 
     #region Properties
@@ -39,6 +40,20 @@ namespace MarkdownMemo.Model
       }
       get { return _path; }
     }
+
+    /// <summary>画像ファイルの場合にTrue</summary>
+    [XmlAttribute("IsImage")]
+    public bool IsImage
+    {
+      set 
+      {
+        _isImage = value;
+        OnPropertyChanged("IsImage");
+      }
+      get { return _isImage; }
+    }
+
+    
     #endregion
 
     #region events
@@ -62,16 +77,21 @@ namespace MarkdownMemo.Model
     {
       this.ID = string.Empty;
       this.Path = string.Empty;
+      this.IsImage = true;
+    
     }
+
     /// <summary>
     /// コンストラクタ
     /// </summary>
     /// <param name="id">オブジェクトを識別する文字列</param>
     /// <param name="path">参照ファイルのパス</param>
-    public LinkItem(string id, string path)
+    /// <param name="isImage">この参照アイテムが画像か参照URIかを指定する</param>
+    public LinkItem(string id, string path, bool isImage)
     {
       this.ID = id;
       this.Path = path;
+      this.IsImage = isImage;
     }
     #endregion
 

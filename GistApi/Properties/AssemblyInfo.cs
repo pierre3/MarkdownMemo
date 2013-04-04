@@ -1,15 +1,16 @@
 ﻿using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 // アセンブリに関する一般情報は以下の属性セットをとおして制御されます。
 // アセンブリに関連付けられている情報を変更するには、
 // これらの属性値を変更してください。
-[assembly: AssemblyTitle("GistSharp")]
-[assembly: AssemblyDescription("Gist APIを通じて新たなGistを作成します。")]
+[assembly: AssemblyTitle("GistsApi")]
+[assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("TAKANO Sho")]
-[assembly: AssemblyProduct("GistSharp")]
-[assembly: AssemblyCopyright("Copyright © TAKANO Sho 2012")]
+[assembly: AssemblyCompany("Pierre3")]
+[assembly: AssemblyProduct("GistsApi")]
+[assembly: AssemblyCopyright("Copyright ©  2013 Pierre3")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -19,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // 次の GUID は、このプロジェクトが COM に公開される場合の、typelib の ID です
-[assembly: Guid("0b436cf0-d7b7-4664-b2be-472a4e5bab58")]
+[assembly: Guid("d4eaf5c4-bafa-4d9d-9b47-0864db4cd5d5")]
 
 // アセンブリのバージョン情報は、以下の 4 つの値で構成されています:
 //
@@ -31,5 +32,5 @@ using System.Runtime.InteropServices;
 // すべての値を指定するか、下のように '*' を使ってビルドおよびリビジョン番号を 
 // 既定値にすることができます:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.0.1.0")]
-[assembly: AssemblyFileVersion("1.0.1.0")]
+[assembly: AssemblyVersion("1.0.0.0")]
+[assembly: AssemblyFileVersion("1.0.0.0")]
